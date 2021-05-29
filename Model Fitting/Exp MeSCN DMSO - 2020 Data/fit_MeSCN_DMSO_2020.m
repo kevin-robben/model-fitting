@@ -1,8 +1,8 @@
 clear all
 close all
 %% set plot limits
-	v1_plot_lim = [2110,2180];
-	v3_plot_lim = [2110,2180];
+	w1_plot_lim = [2110,2180];
+	w3_plot_lim = [2110,2180];
 %% set SIGN limit
 	SIGN_lim = 1e-9;
 %% add paths
@@ -43,22 +43,22 @@ close all
 	w_Tw(35:36) = 80;
 	w_Tw(1:nearest_index(x.Tw,0.3)) = 0; % don't fit where pulse overlap occurs
 % weight along probe frequency axis
-	w_v3 = reshape(zeros(size(x.v3)),[1,x.N3,1]);  % the reshape function makes this an 1xN3x1 vector
-	w_v3(nearest_index(x.v3,2110):nearest_index(x.v3,2180)) = 1;
+	w_w3 = reshape(zeros(size(x.w3)),[1,x.N3,1]);  % the reshape function makes this an 1xN3x1 vector
+	w_w3(nearest_index(x.w3,2110):nearest_index(x.w3,2180)) = 1;
 % composite weight
-	w = w_t1.*w_Tw.*w_v3; % the dimensions should end up being N1xN3xN2 if using the reshape functions above
+	w = w_t1.*w_Tw.*w_w3; % the dimensions should end up being N1xN3xN2 if using the reshape functions above
 %% show comparison between initial guess and data for TA spectrum
 	ax = nexttile(initial_fit_layout,1);
 		cla(ax);
 		M_init = ILS_M(x,p);
 		n_Tw = 5;n_t1 = 5;
-		plot(ax,x.v3,w_v3.*real(D(n_t1,:,n_Tw)),'k-',x.v3,w_v3.*real(M_init(n_t1,:,n_Tw)),'r--');
+		plot(ax,x.w3,w_w3.*real(D(n_t1,:,n_Tw)),'k-',x.w3,w_w3.*real(M_init(n_t1,:,n_Tw)),'r--');
 		xlim(ax,[2110,2190]);
 		xlabel(ax,'Probe Frequency (cm^{-1})');ylabel('\DeltaOD');title(ax,'TA Comparison');
 		legend(ax,'TA from Data','TA from Initial Guess')
 	ax = nexttile(initial_fit_layout,2);
 		cla(ax);
-		plot(ax,x.t1,w_t1.*real(D(:,nearest_index(x.v3,p.v_01.val),1)),'k-',x.t1,w_t1.*real(M_init(:,nearest_index(x.v3,p.v_01.val),1)),'r--');
+		plot(ax,x.t1,w_t1.*real(D(:,nearest_index(x.w3,p.v_01.val),1)),'k-',x.t1,w_t1.*real(M_init(:,nearest_index(x.w3,p.v_01.val),1)),'r--');
 		xlabel(ax,'\tau_1 (ps)');ylabel('\DeltaOD');title(ax,'FID Comparison');
 		legend(ax,'FID from Data','FID from Initial Guess')
 %% iterative fitting:
@@ -78,7 +78,7 @@ close all
 				break
 			end
 		%% update fitting report
-			plot_fit_update(update_fig,p,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,1,aux,timerval,v3_plot_lim);
+			plot_fit_update(update_fig,p,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,1,aux,timerval,w3_plot_lim);
 		%% update video frames from this iteration
 			frame = frame+1;
 			F_update_fig(frame) = getframe(update_fig);
@@ -111,7 +111,7 @@ close all
 	[M_spec_apo,x_apo] = FID_to_2Dspec(M_fit,x,4);
 	fig = figure;
 	for i=1:x.N2
-		compare_2Dspec(fig,x_apo,v1_plot_lim,v3_plot_lim,x_apo.Tw(i),D_spec_apo,M_spec_apo);
+		compare_2Dspec(fig,x_apo,w1_plot_lim,w3_plot_lim,x_apo.Tw(i),D_spec_apo,M_spec_apo);
 		F(i) = getframe(fig);
 	end
 	writerObj = VideoWriter('Output Data\Data Fit Residual Video (DMSO 2019 Data).mp4','MPEG-4');

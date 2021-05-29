@@ -8,7 +8,7 @@ close all
 %% add figure folders to Output Data path
 	if ~exist('Output Data\C and SIGN Figures','dir') && record_C_SIGN_video
 		mkdir('Output Data\C and SIGN Figures');
-    else
+	else
 		delete('Output Data\C and SIGN Figures\*.fig');
 	end
 	if ~exist('Output Data\Fitting Update Figures','dir') && record_C_SIGN_video
@@ -17,15 +17,14 @@ close all
 		delete('Output Data\Fitting Update Figures\*.fig');
 	end
 %% set plot limits
-	v1_plot_lim = [2115,2185];
-	v3_plot_lim = [2115,2185];
+	w1_plot_lim = [2115,2185];
+	w3_plot_lim = [2115,2185];
 %% add paths
     addpath('ILS Functions\');
     addpath('Lineshape Functions\');
     addpath('Miscellaneous Functions\');
 %% load p
-	load('Input Data\p.mat');
-	p_true = p;
+    load('Input Data\p.mat');
 %% load data
     load('Input Data\FID.mat');
 %% set SIGN limit
@@ -45,10 +44,8 @@ close all
 		annotation(C_SIGN_fig,'textbox',[0.01 0.46 0.05 0.03],'String','(B)','LineStyle','none','FitBoxToText','off');
 	update_fig = figure;
 		set(update_fig,'Position',[300 200 1200 600]);
-%% remove 2nd kubo component from fitting
-	p_true = rmfield(p_true,{'kubo2_t','kubo2_D2'});
 %% for loop over different trials of noise and random starting points
-for trial=1:100
+for trial=1:20
 	%% add noise
 		noise = (5e-6)*(randn(size(FID))+1i*randn(size(FID)));
 		D = FID + noise;
@@ -58,25 +55,25 @@ for trial=1:100
 		% weight along waiting time axis
 			w_Tw = reshape(ones(size(x.Tw)),[1,1,x.N2]);
 		% weight along probe frequency axis
-			w_v3 = reshape(ones(size(x.v3)),[1,x.N3,1]);
+			w_w3 = reshape(ones(size(x.w3)),[1,x.N3,1]);
 		% composite weight
-			w = w_t1.*w_Tw.*w_v3;
+			w = w_t1.*w_Tw.*w_w3;
 	%% gather structure of auxiliary fitting information required for algorithm
-		aux = ILS_initialize_aux(p_true);
+		aux = ILS_initialize_aux(p);
 	%% define initial (guess) model parameters as a random vector in boundary space
-		p_init = ILS_rand_params(p_true,aux);
+		p_init = ILS_rand_params(p,aux);
 	%% show comparison between initial guess and data for TA spectrum
 		ax = nexttile(initial_fit_layout,1);
 			cla(ax);
 			M_init = ILS_M(x,p_init);
 			n_Tw = 5;n_t1 = 5;
-			plot(ax,x.v3,w_v3.*real(D(n_t1,:,n_Tw)),'k-',x.v3,w_v3.*real(M_init(n_t1,:,n_Tw)),'r--');
+			plot(ax,x.w3,w_w3.*real(D(n_t1,:,n_Tw)),'k-',x.w3,w_w3.*real(M_init(n_t1,:,n_Tw)),'r--');
 			xlim(ax,[2110,2190]);
 			xlabel(ax,'Probe Frequency (cm^{-1})');ylabel('\DeltaOD');title(ax,'TA Comparison');
 			legend(ax,'TA from Data','TA from Initial Guess')
 		ax = nexttile(initial_fit_layout,2);
 			cla(ax);
-			plot(ax,x.t1,w_t1.*real(D(:,nearest_index(x.v3,p_init.v_01.val),1)),'k-',x.t1,w_t1.*real(M_init(:,nearest_index(x.v3,p_init.v_01.val),1)),'r--');
+			plot(ax,x.t1,w_t1.*real(D(:,nearest_index(x.w3,p_init.v_01.val),1)),'k-',x.t1,w_t1.*real(M_init(:,nearest_index(x.w3,p_init.v_01.val),1)),'r--');
 			xlabel(ax,'\tau_1 (ps)');ylabel('\DeltaOD');title(ax,'FID Comparison');
 			legend(ax,'FID from Data','FID from Initial Guess')
 	%% iterative fitting:
@@ -95,7 +92,7 @@ for trial=1:100
 				break
 			end
 		%% update fitting report
-			plot_fit_update(update_fig,p_init,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,trial,aux,timerval,v3_plot_lim);
+			plot_fit_update(update_fig,p_init,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,trial,aux,timerval,w3_plot_lim);
 			%% add reticles to fitting report to symbolize true values
 				%% homogeneous reticle
 					ax = update_fig.Children.Children(4);
@@ -109,8 +106,6 @@ for trial=1:100
 					ax = update_fig.Children.Children(3);
 					line(ax,[0.4,0.4],[33.64-5,33.64+5],'Color','k','LineStyle','--');
 					line(ax,[0.4-0.4,0.4+0.4],[33.64,33.64],'Color','k','LineStyle','--');
-					line(ax,[1.7,1.7],[6.76-5,6.76+5],'Color','k','LineStyle','--');
-					line(ax,[1.7-0.4,1.7+0.4],[6.76,6.76],'Color','k','LineStyle','--');
 		%% update video frames from this iteration
 			if record_fit_update_video
 				savefig(update_fig,sprintf('Output Data\\Fitting Update Figures\\trial%i iter%i.fig',trial,iter))
@@ -154,7 +149,7 @@ for trial=1:100
 			savefig(C_SIGN_fig,sprintf('Output Data\\C and SIGN Figures\\trial%i.fig',trial))
         end
     %% determine best fit
-		[M,i] = min(SIGN_arr);
+		[M,i] = min(C_arr);
 		p_best_fit(trial) = p_arr(i);
 	%% save p_arr, p_best_fit, SIGN_arr and C_arr, then clear from memory
 		save('Output Data\results.mat','p_arr','p_best_fit','SIGN_arr','C_arr','aux');

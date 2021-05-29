@@ -1,8 +1,8 @@
 clear all;
 close all;
 %% set plot limits
-	v1_plot_lim = [2115,2185];
-	v3_plot_lim = [2115,2185];
+	w1_plot_lim = [2115,2185];
+	w3_plot_lim = [2115,2185];
 %% set SIGN limit
 	SIGN_lim = 1e-9;
 %% load data and independent variables x

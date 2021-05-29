@@ -7,9 +7,9 @@ close all;
 %% linear absorption example
 	load('Input Data\FID.mat');
 	load('Input Data\p.mat');
-	v3_fit_range = [2162.4-16,2162.4+16]; % upper 95% of linear absorption
-	[n3_min,n3_max] = nearest_index(x.v3,v3_fit_range);
-	fxn = @(x,p) Lin_Abs(x,p,p.A01.val,p.c.val,[p.kubo1_t.val,p.kubo2_t.val],[p.kubo1_D2.val,p.kubo2_D2.val],p.T_hom_inv.val,[n3_min,n3_max],x.v3);
+	w3_fit_range = [2162.4-16,2162.4+16]; % upper 95% of linear absorption
+	[n3_min,n3_max] = nearest_index(x.w3,w3_fit_range);
+	fxn = @(x,p) Lin_Abs(x,p,p.A01.val,p.c.val,[p.kubo1_t.val,p.kubo2_t.val],[p.kubo1_D2.val,p.kubo2_D2.val],p.T_hom_inv.val,[n3_min,n3_max],x.w3);
 	p_LA = p;
 	p_LA.('c') = p_LA.A01;p_LA.c.val = 0;p_LA.c.label = 'c';
 	p_LA.A12.var = 0;
@@ -30,7 +30,7 @@ close all;
 	fprintf('Naive Fitting Condition Number           : %f\n',ex1_cond_num)
 	%% plot linear absorbance
 		f = figure;
-		plot(x.v3(n3_min:n3_max),fxn(x,p_LA)/max(fxn(x,p_LA)));
+		plot(x.w3(n3_min:n3_max),fxn(x,p_LA)/max(fxn(x,p_LA)));
 		xlabel('frequency');ylabel('Absorbance (arb. unit)');
 		title('Linear Asorbance Spectrum')
 	%% plot VIF
@@ -50,9 +50,9 @@ close all;
 		ylabel(ax1_1,'VIF')
 		title(ax1_1,{'Naive Fit to','Linear Absorbance'});
 %% CLS method example (linear absorbance)
-	v3_fit_range = [2162.4-9,2162.4+9]; % upper 80% of linear absorption
-	[n3_min,n3_max] = nearest_index(x.v3,v3_fit_range);
-	fxn = @(x,p) Lin_Abs(x,p,p.A01.val,p.c.val,[p.kubo1_t.val,p.kubo2_t.val],[p.kubo1_D2.val,p.kubo2_D2.val],p.T_hom_inv.val,[n3_min,n3_max],x.v3);
+	w3_fit_range = [2162.4-9,2162.4+9]; % upper 80% of linear absorption
+	[n3_min,n3_max] = nearest_index(x.w3,w3_fit_range);
+	fxn = @(x,p) Lin_Abs(x,p,p.A01.val,p.c.val,[p.kubo1_t.val,p.kubo2_t.val],[p.kubo1_D2.val,p.kubo2_D2.val],p.T_hom_inv.val,[n3_min,n3_max],x.w3);
 	p_CLS = p_LA;
 	p_CLS.kubo1_t.var = 0;
 	p_CLS.kubo2_t.var = 0;
@@ -88,9 +88,9 @@ close all;
 			n_start = nearest_index(x.Tw,0.3);
 			w_Tw(1:(n_start-1)) = 0;
 		% weight along probe frequency axis
-			w_v3 = reshape(ones(size(x.v3)),[1,x.N3,1]);
+			w_w3 = reshape(ones(size(x.w3)),[1,x.N3,1]);
 		% composite weight
-			w = w_t1.*w_Tw.*w_v3;
+			w = w_t1.*w_Tw.*w_w3;
 	%% compute jacobian
 		aux = ILS_initialize_aux(p);
 		fprintf('Variables for model fitting:\n');

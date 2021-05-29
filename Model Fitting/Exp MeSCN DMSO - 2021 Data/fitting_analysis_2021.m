@@ -15,7 +15,7 @@ close all
 	load('Output Data\p_best_fit.mat');
 %% set plot limits
 	v1_plot_lim = [2110,2180];
-	v3_plot_lim = [2110,2180];
+	w3_plot_lim = [2110,2180];
 %% initialize figures
 	LA_fig = figure;
 		set(LA_fig,'Position',[50 50 400 600]);
@@ -159,32 +159,32 @@ close all
 	%% measure CLS of experimental data
 		[D_spec_apo,x_apo] = FID_to_2Dspec(D,x,4);
 		for i=1:x.N2
-			[CL_v3, v1_axis, CLS] = trace_CL(x_apo.v1,[2153.7-2.5,2153.7+2.5],x_apo.v3,[2153.5-6,2153.5+6],D_spec_apo(:,:,i),'Asymmetric Lorentzian');
+			[CL_w3, v1_axis, CLS] = trace_CL(x_apo.v1,[2153.7-2.5,2153.7+2.5],x_apo.w3,[2153.5-6,2153.5+6],D_spec_apo(:,:,i),'Asymmetric Lorentzian');
 			CLS_arr_01(i) = CLS;
-			CL_v3_arr_01(i,:) = CL_v3;
-			[CL_v3, v1_axis, CLS] = trace_CL(x_apo.v1,[2153.7-2.5,2153.7+2.5],x_apo.v3,[2128-6,2128+6],-D_spec_apo(:,:,i),'Asymmetric Lorentzian');
+			CL_w3_arr_01(i,:) = CL_w3;
+			[CL_w3, v1_axis, CLS] = trace_CL(x_apo.v1,[2153.7-2.5,2153.7+2.5],x_apo.w3,[2128-6,2128+6],-D_spec_apo(:,:,i),'Asymmetric Lorentzian');
 			CLS_arr_12(i) = CLS;
-			CL_v3_arr_12(i,:) = CL_v3;
+			CL_w3_arr_12(i,:) = CL_w3;
 		end
 	%% fit experimental CLS decay to one-component exponential decay
 		CLS_fit_01 = fit_exp_decay(x.Tw(3:36),CLS_arr_01(3:36),[0.4,0.3]);
 		CLS_fit_12 = fit_exp_decay(x.Tw(3:36),CLS_arr_12(3:36),[0.4,0.3]);
-		save('Output Data\CLS of exp data.mat','v1_axis','CLS_arr_01','CLS_arr_12','CL_v3_arr_01','CL_v3_arr_12','CLS_fit_01','CLS_fit_12');
+		save('Output Data\CLS of exp data.mat','v1_axis','CLS_arr_01','CLS_arr_12','CL_w3_arr_01','CL_w3_arr_12','CLS_fit_01','CLS_fit_12');
 	%% measure CLS of model fitted data
 		M_FID = ILS_M(x,p_fit);
 		[M_spec_apo,x_apo] = FID_to_2Dspec(M_FID,x,4);
-		clear v1_axis CL_v3
+		clear v1_axis CL_w3
 		for i=1:x.N2
-				[CL_v3, v1_axis, CLS] = trace_CL(x_apo.v1,[2153.7-2.5,2153.7+2.5],x_apo.v3,[2154.5-6,2154.5+6],M_spec_apo(:,:,i),'Asymmetric Lorentzian');
+				[CL_w3, v1_axis, CLS] = trace_CL(x_apo.v1,[2153.7-2.5,2153.7+2.5],x_apo.w3,[2154.5-6,2154.5+6],M_spec_apo(:,:,i),'Asymmetric Lorentzian');
 				M_CLS_arr_01(i) = CLS;
-				M_CL_v3_arr_01(i,:) = CL_v3;
-				[CL_v3, v1_axis, CLS] = trace_CL(x_apo.v1,[2153.7-2.5,2153.7+2.5],x_apo.v3,[2129-6,2129+6],-M_spec_apo(:,:,i),'Asymmetric Lorentzian');
+				M_CL_w3_arr_01(i,:) = CL_w3;
+				[CL_w3, v1_axis, CLS] = trace_CL(x_apo.v1,[2153.7-2.5,2153.7+2.5],x_apo.w3,[2129-6,2129+6],-M_spec_apo(:,:,i),'Asymmetric Lorentzian');
 				M_CLS_arr_12(i) = CLS;
-				M_CL_v3_arr_12(i,:) = CL_v3;
+				M_CL_w3_arr_12(i,:) = CL_w3;
 		end
 		M_CLS_fit_01 = fit_exp_decay(x.Tw,M_CLS_arr_01,[0.4,0.3]);
 		M_CLS_fit_12 = fit_exp_decay(x.Tw,M_CLS_arr_12,[0.4,0.3]);
-		save('Output Data\CLS of model fit.mat','v1_axis','M_CLS_arr_01','M_CLS_arr_12','M_CL_v3_arr_01','M_CL_v3_arr_12','M_CLS_fit_01','M_CLS_fit_12');
+		save('Output Data\CLS of model fit.mat','v1_axis','M_CLS_arr_01','M_CLS_arr_12','M_CL_w3_arr_01','M_CL_w3_arr_12','M_CLS_fit_01','M_CLS_fit_12');
 	%% compare CLS on plots
 		l = semilogy(CLS_2020vs2021_ax,Tw_arr_2020,CLS_arr_01_2020,'ms',Tw_arr_2020,feval(CLS_fit_01_2020,Tw_arr_2020),'m-',x_apo.Tw,CLS_arr_01,'ko',x_apo.Tw,feval(CLS_fit_01,x_apo.Tw),'k-');
 		xlim(CLS_2020vs2021_ax,[0,10]);ylim(CLS_2020vs2021_ax,[0.02,0.5]);
@@ -211,63 +211,63 @@ close all
 		
 %% compare first order response between model and experimental data
 	load('Input Data\Probe Abs.mat');
-	load('Input Data\Bruker Abs.mat');bruker_v3 = bruker_v3+0.3; % shift by 0.3 cm-1 to match probe
+	load('Input Data\Bruker Abs.mat');bruker_w3 = bruker_w3+0.3; % shift by 0.3 cm-1 to match probe
 	probe_abs = probe_abs/max(probe_abs);
-	model_abs = match_abs(probe_v3,probe_abs,x.v3,M_1st_order_kubo(x,p_fit)); %normalize
-	bruker_abs = match_abs(probe_v3,probe_abs,bruker_v3,bruker_abs); %normalize and offset to match model
-	h = plot(fit_LA_ax,probe_v3,probe_abs,'k-',probe_v3,bruker_abs,'b-.',x.v3,model_abs,'r--');
+	model_abs = match_abs(probe_w3,probe_abs,x.w3,M_1st_order_kubo(x,p_fit)); %normalize
+	bruker_abs = match_abs(probe_w3,probe_abs,bruker_w3,bruker_abs); %normalize and offset to match model
+	h = plot(fit_LA_ax,probe_w3,probe_abs,'k-',probe_w3,bruker_abs,'b-.',x.w3,model_abs,'r--');
 	set(h,'LineWidth',2);
 	legend(fit_LA_ax,'Probe','FTIR',['Model Fitting',newline,' 2D IR']);
 	set(fit_LA_ax,'YTick',[0 0.2 0.4 0.6 0.8 1],'YTickLabel',{'0','0.2','0.4','0.6','0.8','1'})
 	xlim(fit_LA_ax,[2130,2180]);ylim(fit_LA_ax,[0,1.1])
 	xlabel(fit_LA_ax,'Frequency (cm^{-1})');ylabel(fit_LA_ax,'Absorbance (norm.)');
 %% compare first order response between model and experimental data (scaled for comparing FWHM)
-	bruker_abs = bruker_abs - ones(size(bruker_abs))*bruker_abs(nearest_index(probe_v3,2130));
+	bruker_abs = bruker_abs - ones(size(bruker_abs))*bruker_abs(nearest_index(probe_w3,2130));
 	bruker_abs = bruker_abs/max(bruker_abs); %normalize and offset to match model
-	h = plot(fit_LA_ax2,probe_v3,probe_abs,'k-',probe_v3,bruker_abs,'b-.',x.v3,model_abs,'r--');
+	h = plot(fit_LA_ax2,probe_w3,probe_abs,'k-',probe_w3,bruker_abs,'b-.',x.w3,model_abs,'r--');
 	set(h,'LineWidth',2);
 	legend(fit_LA_ax2,'Probe','FTIR',['Model Fitting',newline,' 2D IR']);
 	set(fit_LA_ax2,'YTick',[0 0.2 0.4 0.6 0.8 1],'YTickLabel',{'0','0.2','0.4','0.6','0.8','1'})
 	xlim(fit_LA_ax2,[2130,2180]);ylim(fit_LA_ax2,[0,1.1])
 	xlabel(fit_LA_ax2,'Frequency (cm^{-1})');ylabel(fit_LA_ax2,'Absorbance (norm.)');
 %% fit frequency components from experimental CLS decay to upper 90% of linear absorption spectrum
-	n3_v_min = nearest_index(x.v3,2141.6);% 2146.1, 2144.4, 2141.6
-	n3_v_max = nearest_index(x.v3,2165.2); % 2161.0, 2162.5, 2165.2
-	fit_type = fittype(@(A,c,kubo_D2,T_hom_inv,v3) Lin_Abs(x,p_fit,A,c,[CLS_fit_01.tau1],[kubo_D2],T_hom_inv,[n3_v_min,n3_v_max],v3),'independent','v3');
+	n3_v_min = nearest_index(x.w3,2141.6);% 2146.1, 2144.4, 2141.6
+	n3_v_max = nearest_index(x.w3,2165.2); % 2161.0, 2162.5, 2165.2
+	fit_type = fittype(@(A,c,kubo_D2,T_hom_inv,w3) Lin_Abs(x,p_fit,A,c,[CLS_fit_01.tau1],[kubo_D2],T_hom_inv,[n3_v_min,n3_v_max],w3),'independent','w3');
 	fit_options = fitoptions(fit_type);
 	fit_options = fitoptions(fit_options,'Algorithm','Levenberg-Marquardt');
 	fit_options = fitoptions(fit_options,'TolX',1e-20);
 	fit_options = fitoptions(fit_options,'TolFun',1e-20);
 	fit_options = fitoptions(fit_options,'StartPoint',[2.8e3,-0.005,15,0.3]);
-	[f_90,gof,output] = fit(probe_v3(n3_v_min:n3_v_max)',probe_abs(n3_v_min:n3_v_max)',fit_type,fit_options);
-	f_90_abs = Lin_Abs(x,p_fit,f_90.A,f_90.c,[CLS_fit_01.tau1],[f_90.kubo_D2],f_90.T_hom_inv,[1,x.N3],x.v3)';
-	f_90_v3 = x.v3(1:x.N3);
+	[f_90,gof,output] = fit(probe_w3(n3_v_min:n3_v_max)',probe_abs(n3_v_min:n3_v_max)',fit_type,fit_options);
+	f_90_abs = Lin_Abs(x,p_fit,f_90.A,f_90.c,[CLS_fit_01.tau1],[f_90.kubo_D2],f_90.T_hom_inv,[1,x.N3],x.w3)';
+	f_90_w3 = x.w3(1:x.N3);
 %% fit frequency components from experimental CLS decay to upper 80% of linear absorption spectrum
-	n3_v_min = nearest_index(x.v3,2144.4);
-	n3_v_max = nearest_index(x.v3,2162.5);
-	fit_type = fittype(@(A,c,kubo_D2,T_hom_inv,v3) Lin_Abs(x,p_fit,A,c,[CLS_fit_01.tau1],[kubo_D2],T_hom_inv,[n3_v_min,n3_v_max],v3),'independent','v3');
+	n3_v_min = nearest_index(x.w3,2144.4);
+	n3_v_max = nearest_index(x.w3,2162.5);
+	fit_type = fittype(@(A,c,kubo_D2,T_hom_inv,w3) Lin_Abs(x,p_fit,A,c,[CLS_fit_01.tau1],[kubo_D2],T_hom_inv,[n3_v_min,n3_v_max],w3),'independent','w3');
 	fit_options = fitoptions(fit_type);
 	fit_options = fitoptions(fit_options,'Algorithm','Levenberg-Marquardt');
 	fit_options = fitoptions(fit_options,'TolX',1e-20);
 	fit_options = fitoptions(fit_options,'TolFun',1e-20);
 	fit_options = fitoptions(fit_options,'StartPoint',[2.8e3,-0.005,10,0.4]);
-	[f_80,gof,output] = fit(probe_v3(n3_v_min:n3_v_max)',probe_abs(n3_v_min:n3_v_max)',fit_type,fit_options);
-	f_80_abs = Lin_Abs(x,p_fit,f_80.A,f_80.c,[CLS_fit_01.tau1],[f_80.kubo_D2],f_80.T_hom_inv,[1,x.N3],x.v3)';
-	f_80_v3 = x.v3(1:x.N3);
+	[f_80,gof,output] = fit(probe_w3(n3_v_min:n3_v_max)',probe_abs(n3_v_min:n3_v_max)',fit_type,fit_options);
+	f_80_abs = Lin_Abs(x,p_fit,f_80.A,f_80.c,[CLS_fit_01.tau1],[f_80.kubo_D2],f_80.T_hom_inv,[1,x.N3],x.w3)';
+	f_80_w3 = x.w3(1:x.N3);
 %% fit frequency components from experimental CLS decay to upper 70% of linear absorption spectrum
-	n3_v_min = nearest_index(x.v3,2146.1);
-	n3_v_max = nearest_index(x.v3,2161.0);
-	fit_type = fittype(@(A,c,kubo_D2,T_hom_inv,v3) Lin_Abs(x,p_fit,A,c,[CLS_fit_01.tau1],[kubo_D2],T_hom_inv,[n3_v_min,n3_v_max],v3),'independent','v3');
+	n3_v_min = nearest_index(x.w3,2146.1);
+	n3_v_max = nearest_index(x.w3,2161.0);
+	fit_type = fittype(@(A,c,kubo_D2,T_hom_inv,w3) Lin_Abs(x,p_fit,A,c,[CLS_fit_01.tau1],[kubo_D2],T_hom_inv,[n3_v_min,n3_v_max],w3),'independent','w3');
 	fit_options = fitoptions(fit_type);
 	fit_options = fitoptions(fit_options,'Algorithm','Levenberg-Marquardt');
 	fit_options = fitoptions(fit_options,'TolX',1e-20);
 	fit_options = fitoptions(fit_options,'TolFun',1e-20);
 	fit_options = fitoptions(fit_options,'StartPoint',[2.8e3,-0.005,5,0.5]);
-	[f_70,gof,output] = fit(probe_v3(n3_v_min:n3_v_max)',probe_abs(n3_v_min:n3_v_max)',fit_type,fit_options);
-	f_70_abs = Lin_Abs(x,p_fit,f_70.A,f_70.c,[CLS_fit_01.tau1],[f_70.kubo_D2],f_70.T_hom_inv,[1,x.N3],x.v3)';
-	f_70_v3 = x.v3(1:x.N3);
+	[f_70,gof,output] = fit(probe_w3(n3_v_min:n3_v_max)',probe_abs(n3_v_min:n3_v_max)',fit_type,fit_options);
+	f_70_abs = Lin_Abs(x,p_fit,f_70.A,f_70.c,[CLS_fit_01.tau1],[f_70.kubo_D2],f_70.T_hom_inv,[1,x.N3],x.w3)';
+	f_70_w3 = x.w3(1:x.N3);
 %% plot linear absorption fits
-	h = plot(CLS_LA_ax,probe_v3,probe_abs,'k-',f_90_v3,f_90_abs,'--',f_80_v3,f_80_abs,'--',f_70_v3,f_70_abs,'--');
+	h = plot(CLS_LA_ax,probe_w3,probe_abs,'k-',f_90_w3,f_90_abs,'--',f_80_w3,f_80_abs,'--',f_70_w3,f_70_abs,'--');
 	h(1).Color = [0,0,0];h(2).Color = [0,0,1];h(3).Color = [0.3922,0.8314,0.0745];h(4).Color = [1.00,0.41,0.16];
 	set(h,'LineWidth',2);
 	legend(CLS_LA_ax,'Probe','CLS (90%)','CLS (80%)','CLS (70%)');
@@ -279,14 +279,14 @@ close all
 	savefig(LA_fig,'Output Data\Linear Absorbance.fig')
 	save('Output Data\Linear Absorbance Comparisons.mat','f_90','f_80','f_70');
 %% plot linear absorption fits (scaled for comparing FWHM)
-	f_90_abs = Lin_Abs(x,p_fit,f_90.A,0,[CLS_fit_01.tau1],[f_90.kubo_D2],f_90.T_hom_inv,[1,x.N3],x.v3)';
+	f_90_abs = Lin_Abs(x,p_fit,f_90.A,0,[CLS_fit_01.tau1],[f_90.kubo_D2],f_90.T_hom_inv,[1,x.N3],x.w3)';
 	f_90_abs = f_90_abs/max(f_90_abs);
-	f_80_abs = Lin_Abs(x,p_fit,f_80.A,0,[CLS_fit_01.tau1],[f_80.kubo_D2],f_80.T_hom_inv,[1,x.N3],x.v3)';
+	f_80_abs = Lin_Abs(x,p_fit,f_80.A,0,[CLS_fit_01.tau1],[f_80.kubo_D2],f_80.T_hom_inv,[1,x.N3],x.w3)';
 	f_80_abs = f_80_abs/max(f_80_abs);
-	f_70_abs = Lin_Abs(x,p_fit,f_70.A,0,[CLS_fit_01.tau1],[f_70.kubo_D2],f_70.T_hom_inv,[1,x.N3],x.v3)';
+	f_70_abs = Lin_Abs(x,p_fit,f_70.A,0,[CLS_fit_01.tau1],[f_70.kubo_D2],f_70.T_hom_inv,[1,x.N3],x.w3)';
 	f_70_abs = f_70_abs/max(f_70_abs);
 	
-	h = plot(CLS_LA_ax2,probe_v3,probe_abs,'k-',f_90_v3,f_90_abs,'--',f_80_v3,f_80_abs,'--',f_70_v3,f_70_abs,'--');
+	h = plot(CLS_LA_ax2,probe_w3,probe_abs,'k-',f_90_w3,f_90_abs,'--',f_80_w3,f_80_abs,'--',f_70_w3,f_70_abs,'--');
 	h(1).Color = [0,0,0];h(2).Color = [0,0,1];h(3).Color = [0.3922,0.8314,0.0745];h(4).Color = [1.00,0.41,0.16];
 	set(h,'LineWidth',2);
 	legend(CLS_LA_ax2,'Probe','CLS (90%)','CLS (80%)','CLS (70%)');
@@ -388,164 +388,6 @@ close all
 		annotation(params_fig,'textbox',[0.49 0.29 0.10 0.045],'String',{'(F)'},'LineStyle','none');
 	%% save figure
 		savefig(params_fig,'Output Data\Params.fig');
-	
-%% make model fitting FID and CLS FID
-% 	M_FID = ILS_M(x,p_best_fit(1));
-% 	
-% 	p_CLS = p_best_fit(1); % start using model fit FID
-% 	p_CLS.T_hom_inv.val = f_80.T_hom_inv; % copy over homogeneous dephasing
-% 	p_CLS.kubo1_t.val = CLS_fit_01.tau1; % copy over kubo time constant
-% 	p_CLS.kubo1_D2.val = f_80.kubo_D2; % copy over kubo frequency amplitude
-% 	CLS_FID = ILS_M(x,p_CLS); % make FID
-% 	dA = (1/sum(abs(CLS_FID).^2,'all'))*sum(real(conj(CLS_FID).*(D-CLS_FID)),'all'); % compute linear least squares fit for scaling
-% 	CLS_FID = (1+dA)*CLS_FID; % apply linear least squares fit scaling
-% 	
-% 	SSE_CLS_fit = sum(abs(D-CLS_FID).^2,'all');
-% 	SSE_model_fit = sum(abs(D-M_FID).^2,'all');
-% 	fprintf('SSE of model fitting: %.6e\nSSE of CLS fitting:   %.6e\n',SSE_model_fit,SSE_CLS_fit);
-% %% FFT FIDs into frequency-frequency domain
-% 	[D_spec_apo,x_apo] = FID_to_2Dspec(D,x,4);
-% 	[M_spec_apo,x_apo] = FID_to_2Dspec(M_FID,x,4);
-% 	[CLS_spec_apo,x_apo] = FID_to_2Dspec(CLS_FID,x,4);
-% %% make TA comparison between data and model fit
-% 	fig = figure;
-% 	for i=1:x.N2
-% 		compare_TA(fig,x,v3_plot_lim,x.Tw(i),D,M_FID)
-% 		F(i) = getframe(fig);
-% 	end
-% 	writerObj = VideoWriter('Output Data\Data Model Residual TA Video.mp4','MPEG-4');
-% 	writerObj.FrameRate = 2;
-% 	writerObj.Quality = 100;
-% 	open(writerObj);
-% 	for i=1:length(F)
-% 		writeVideo(writerObj,F(i));
-% 	end
-% 	close(writerObj);
-% %% make TA comparison between data, model fit and CLS fit
-% 	fig = figure;
-% 	for i=1:x.N2
-% 		compare_TA_2(fig,x,v3_plot_lim,x.Tw(i),D,M_FID,CLS_FID)
-% 		F(i) = getframe(fig);
-% 	end
-% 	writerObj = VideoWriter('Output Data\Data Model CLS Residual TA Video.mp4','MPEG-4');
-% 	writerObj.FrameRate = 2;
-% 	writerObj.Quality = 100;
-% 	open(writerObj);
-% 	for i=1:length(F)
-% 		writeVideo(writerObj,F(i));
-% 	end
-% 	close(writerObj);
-% %% make 2D slice comparison between data, model fit and CLS fit
-% 	fig = figure;
-% 	for i=1:x.N2
-% 		compare_2Dslice_2(fig,x_apo,2153,v3_plot_lim,x_apo.Tw(i),D_spec_apo,M_spec_apo,CLS_spec_apo)
-% 		F(i) = getframe(fig);
-% 	end
-% 	writerObj = VideoWriter('Output Data\Data Model CLS Residual TA Video.mp4','MPEG-4');
-% 	writerObj.FrameRate = 2;
-% 	writerObj.Quality = 100;
-% 	open(writerObj);
-% 	for i=1:length(F)
-% 		writeVideo(writerObj,F(i));
-% 	end
-% 	close(writerObj);
-% %% make Tw series of 2D IR comparison between data, model fitting and CLS spectra
-% 	fig = figure;
-% 	for i=1:x.N2
-% 		compare_2Dspec_2(fig,x_apo,v1_plot_lim,v3_plot_lim,x_apo.Tw(i),D_spec_apo,M_spec_apo,CLS_spec_apo);
-% 		F(i) = getframe(fig);
-% 	end
-% 	writerObj = VideoWriter('Output Data\Data Model CLS Residual 2D IR Video.mp4','MPEG-4');
-% 	writerObj.FrameRate = 2;
-% 	writerObj.Quality = 100;
-% 	open(writerObj);
-% 	for i=1:length(F)
-% 		writeVideo(writerObj,F(i));
-% 		disp(i)
-% 	end
-% 	close(writerObj);
-% %% make Tw series of 2D IR comparison between data and model fitting
-% 	fig = figure;
-% 	for i=1:x.N2
-% 		compare_2Dspec(fig,x_apo,v1_plot_lim,v3_plot_lim,x_apo.Tw(i),D_spec_apo,M_spec_apo);
-% 		F(i) = getframe(fig);
-% 		res_ax = fig.Children(1).Children(2);
-% 		data_ax = fig.Children(1).Children(6);
-% 		hold(res_ax,'on')
-% 		hold(data_ax,'on')
-% 		plot(res_ax,v1_axis,CL_v3_arr_01(i,:),'y.')
-% 		plot(data_ax,v1_axis,CL_v3_arr_01(i,:),'y.')
-% 		F(i) = getframe(fig);
-% 	end
-% 	writerObj = VideoWriter('Output Data\Data Model Residual 2D IR Video.mp4','MPEG-4');
-% 	writerObj.FrameRate = 2;
-% 	writerObj.Quality = 100;
-% 	open(writerObj);
-% 	for i=1:length(F)
-% 		writeVideo(writerObj,F(i));
-% 	end
-% 	close(writerObj);
-%% make side-by-side plots of residuals between 2020 and 2021 data
-% 	%% load 2020 residuals (res_2020 and x_2020)
-% 		load('Output Data\2D residuals.mat');
-% 	%% make 2021 residuals (res_2021 and x_2021)
-% 		res_2021 = D_spec_apo - M_spec_apo;
-% 		x_2021 = x_apo;
-% 	
-% 		res_fig = figure;
-% 		set(res_fig,'Position',[50 50 1000 500]);
-% 		res_layout = tiledlayout(res_fig,2,2,'Padding','compact','TileSpacing','compact');
-% 		i = 11;
-% 			%% 2021 data
-% 				ax = nexttile(res_layout,2);
-% 				plot_2Dspec(ax,x_2021,v1_plot_lim,v3_plot_lim,res_2021(:,:,i),sprintf("2021 Data @ T_w = %.3gps",x_2021.Tw(i)));
-% 			%% 2020 data
-% 				ax = nexttile(res_layout,1);
-% 				n_Tw = nearest_index(x_2020.Tw,x_2021.Tw(i));
-% 				plot_2Dspec(ax,x_2020,v1_plot_lim,v3_plot_lim,res_2020(:,:,n_Tw),sprintf("2020 Data @ T_w = %.3gps",x_2020.Tw(n_Tw)));
-% 		i = 28;
-% 			%% 2021 data
-% 				ax = nexttile(res_layout,4);
-% 				plot_2Dspec(ax,x_2021,v1_plot_lim,v3_plot_lim,res_2021(:,:,i),sprintf("2021 Data @ T_w = %.3gps",x_2021.Tw(i)));
-% 			%% 2020 data
-% 				ax = nexttile(res_layout,3);
-% 				n_Tw = nearest_index(x_2020.Tw,x_2021.Tw(i));
-% 				plot_2Dspec(ax,x_2020,v1_plot_lim,v3_plot_lim,res_2020(:,:,n_Tw),sprintf("2020 Data @ T_w = %.3gps",x_2020.Tw(n_Tw)));
-% 		
-% %% make video of side-by-side plots of residuals between 2020 and 2021 data
-% 	%% load 2020 residuals (res_2020 and x_2020)
-% 		load('Output Data\2D residuals.mat');
-% 	%% make 2021 residuals (res_2021 and x_2021)
-% 		res_2021 = D_spec_apo - M_spec_apo;
-% 		x_2021 = x_apo;
-% 	%% make frames
-% 		if exist('F','var')
-% 			clear F;
-% 		end
-% 		res_fig = figure;
-% 		set(res_fig,'Position',[50 50 1000 500]);
-% 		res_layout = tiledlayout(res_fig,1,2,'Padding','compact','TileSpacing','compact');
-% 		for i=1:x_2021.N2
-% 			%% 2021 data
-% 				ax = nexttile(res_layout,2);
-% 				plot_2Dspec(ax,x_2021,v1_plot_lim,v3_plot_lim,res_2021(:,:,i),sprintf("2021 Data @ T_w = %.3gps",x_2021.Tw(i)));
-% 			%% 2020 data
-% 				ax = nexttile(res_layout,1);
-% 				n_Tw = nearest_index(x_2020.Tw,x_2021.Tw(i));
-% 				plot_2Dspec(ax,x_2020,v1_plot_lim,v3_plot_lim,res_2020(:,:,n_Tw),sprintf("2020 Data @ T_w = %.3gps",x_2020.Tw(n_Tw)));
-% 			%% capture frame
-% 				F(i) = getframe(res_fig);
-% 		end
-% 	%% write video
-% 		writerObj = VideoWriter('Output Data\2020 vs 2021 Residuals Video.mp4','MPEG-4');
-% 		writerObj.FrameRate = 2;
-% 		writerObj.Quality = 100;
-% 		open(writerObj);
-% 		for i=1:length(F)
-% 			writeVideo(writerObj,F(i));
-% 		end
-% 		close(writerObj);
-		
 %% remove paths
     rmpath('ILS Functions\');
     rmpath('Lineshape Functions\');
