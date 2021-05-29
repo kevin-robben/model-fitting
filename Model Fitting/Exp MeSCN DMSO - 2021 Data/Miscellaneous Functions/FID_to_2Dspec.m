@@ -11,7 +11,7 @@ function varargout = FID_to_2Dspec(varargin)
         x = varargin{2};
         zero_pad_fctr = round(varargin{3});
         dt1 = x.t1(2)-x.t1(1);
-		x_apo = gen_x([x.t1(1),(x.N1*zero_pad_fctr-1)*dt1],x.N1*zero_pad_fctr,x.v1(1),[x.v3(1),x.v3(x.N3)],x.N3,x.Tw,x.num_type);
+		x_apo = gen_x([x.t1(1),(x.N1*zero_pad_fctr-1)*dt1],x.N1*zero_pad_fctr,x.w1(1),[x.w3(1),x.w3(x.N3)],x.N3,x.Tw,x.num_type);
         [apo_mask,inv_apo_mask] = apo_masks(x);
         FID = FID.*apo_mask;
     else

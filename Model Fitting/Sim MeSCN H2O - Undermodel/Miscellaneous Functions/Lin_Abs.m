@@ -1,4 +1,4 @@
-function lin_spec = Lin_Abs(x,p,A,c,kubo_t_arr,kubo_D2_arr,T_hom_inv,n3_fit_range,v3)
+function lin_spec = Lin_Abs(x,p,A,c,kubo_t_arr,kubo_D2_arr,T_hom_inv,n3_fit_range,w3)
 	%% substitute Kubo parameters
 		if numel(kubo_t_arr) == 0
 			p.kubo1_t.val = 1;
@@ -35,8 +35,8 @@ function lin_spec = Lin_Abs(x,p,A,c,kubo_t_arr,kubo_D2_arr,T_hom_inv,n3_fit_rang
 	%% compute linear absorption with offset
 		temp = M_1st_order_kubo(x,p)'+c;
 	%% trim linear absorption (this is really just to make MATLAB happy when using this as a fitting function)
-		lin_spec = zeros(size(v3));
-		if numel(v3) >= numel(n3_fit_range(1):n3_fit_range(2))
+		lin_spec = zeros(size(w3));
+		if numel(w3) >= numel(n3_fit_range(1):n3_fit_range(2))
 			lin_spec = temp(n3_fit_range(1):n3_fit_range(2));
 		end
 end

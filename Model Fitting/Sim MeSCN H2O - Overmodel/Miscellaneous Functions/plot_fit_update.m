@@ -1,5 +1,5 @@
 %% print parameters
-function plot_fit_update(fig,p_init,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,trial_num,aux,timerval,v3_plot_lim)
+function plot_fit_update(fig,p_init,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,trial_num,aux,timerval,w3_plot_lim)
 	%% include p_init in p_arr array *** note that this pushes p_arr(i) --> p_arr(i+1), however, p_arr(i) still corresponds to C_arr(i) and SIGN(i)***
 		p_arr = [p_init,p_arr];
 	%% gather arrays to plot later on
@@ -54,6 +54,8 @@ function plot_fit_update(fig,p_init,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,trial
 				plot(ax,vib_arr(aux.stall_iter(i)+1,1),vib_arr(aux.stall_iter(i)+1,2),'r^','MarkerSize',4,'MarkerFaceColor','r');
 			end
 			plot(ax,vib_arr(iter+1,1),vib_arr(iter+1,2),'ko');
+			xlim(ax,[p_init.v_01.bounds1,p_init.v_01.bounds2]);
+			ylim(ax,[p_init.Anh.bounds1,p_init.Anh.bounds2]);
 			xlabel(ax,'0-1 Transition (cm^{-1})');ylabel(ax,'Anharmonic Shift (cm^{-1})');title(ax,'Vibrational Frequencies');
 			xtickformat(ax,'%.2g');ytickformat(ax,'%.2g')
     %% plot inverse homogeneous components
@@ -67,6 +69,8 @@ function plot_fit_update(fig,p_init,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,trial
 				plot(ax,hom_arr(aux.stall_iter(i)+1,1),hom_arr(aux.stall_iter(i)+1,2),'r^','MarkerSize',4,'MarkerFaceColor','r');
 			end
 			plot(ax,hom_arr(iter+1,1),hom_arr(iter+1,2),'ko');
+			xlim(ax,[p_init.T_hom_inv.bounds1,p_init.T_hom_inv.bounds2]);
+			ylim(ax,[p_init.T_LT_inv.bounds1,p_init.T_LT_inv.bounds2]);
             xlabel(ax,'Inverse Hom. Lifetime (1/ps)');ylabel(ax,'Inverse Vib. Lifetime (1/ps)');title(ax,'Inverse Hom. and Vib. Lifetimes');
             xtickformat(ax,'%.2g');ytickformat(ax,'%.3g')
     %% plot kubo components
@@ -81,6 +85,10 @@ function plot_fit_update(fig,p_init,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,trial
 					plot(ax,kubo_arr_1(aux.stall_iter(i)+1,1),kubo_arr_1(aux.stall_iter(i)+1,2),'r^','MarkerSize',4,'MarkerFaceColor','r');
 				end
 				plot(ax,kubo_arr_1(iter+1,1),kubo_arr_1(iter+1,2),'ko');
+				x_low(1) = p_init.kubo1_t.bounds1;
+				x_high(1) = p_init.kubo1_t.bounds2;
+				y_low(1) = p_init.kubo1_D2.bounds1;
+				y_high(1) = p_init.kubo1_D2.bounds2;
 			end
 			if isfield(p_arr(1),'kubo2_t') && isfield(p_arr(1),'kubo2_D2')
 				for i=1:iter
@@ -90,6 +98,10 @@ function plot_fit_update(fig,p_init,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,trial
 					plot(ax,kubo_arr_2(aux.stall_iter(i)+1,1),kubo_arr_2(aux.stall_iter(i)+1,2),'r^','MarkerSize',4,'MarkerFaceColor','r');
 				end
 				plot(ax,kubo_arr_2(iter+1,1),kubo_arr_2(iter+1,2),'ko');
+				x_low(2) = p_init.kubo2_t.bounds1;
+				x_high(2) = p_init.kubo2_t.bounds2;
+				y_low(2) = p_init.kubo2_D2.bounds1;
+				y_high(2) = p_init.kubo2_D2.bounds2;
 			end
 			if isfield(p_arr(1),'kubo3_t') && isfield(p_arr(1),'kubo3_D2')
 				for i=1:iter
@@ -99,16 +111,22 @@ function plot_fit_update(fig,p_init,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,trial
 					plot(ax,kubo_arr_3(aux.stall_iter(i)+1,1),kubo_arr_3(aux.stall_iter(i)+1,2),'r^','MarkerSize',4,'MarkerFaceColor','r');
 				end
 				plot(ax,kubo_arr_3(iter+1,1),kubo_arr_3(iter+1,2),'ko');
+				x_low(3) = p_init.kubo3_t.bounds1;
+				x_high(3) = p_init.kubo3_t.bounds2;
+				y_low(3) = p_init.kubo3_D2.bounds1;
+				y_high(3) = p_init.kubo3_D2.bounds2;
 			end
+			xlim(ax,[min(x_low),max(x_high)]);
+			ylim(ax,[min(y_low),max(y_high)]);
             xlabel(ax,'\tau_c (ps)');ylabel(ax,'\Delta^2 (cm^{-1})^2');title(ax,'Kubo Components');
             xtickformat(ax,'%.2g');ytickformat(ax,'%.2g')
     %% plot fit comparison
         ax = nexttile(t,6);
 			ax.Box = 'on';
 			M = ILS_M(x,p_arr(iter+1));
-			plot(ax,x.v3,real(D(1,:,1)),'k-',x.v3,real(M(1,:,1)),'r-')
-			xlim(ax,v3_plot_lim);
-            xlabel(ax,'\nu_3 (cm^{-1})');ylabel(ax,'\DeltaOD');title(ax,'Fit Comparison');
+			plot(ax,x.w3,real(D(1,:,1)),'k-',x.w3,real(M(1,:,1)),'r-')
+			xlim(ax,w3_plot_lim);
+            xlabel(ax,'\omega_3 (cm^{-1})');ylabel(ax,'\DeltaOD');title(ax,'Fit Comparison');
             xtickformat(ax,'%0.0g');ytickformat(ax,'%0.0g')
             legend(ax,'Data','Model Fit')
     drawnow

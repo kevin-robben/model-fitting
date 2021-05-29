@@ -168,9 +168,9 @@ for trial=1:100
             model_fit_CI(1:4) = [model_fit_CI(2),model_fit_CI(1),model_fit_CI(4),model_fit_CI(3)];
 		end
 	%% measure CLS of experimental data
-        [D_2DIR,x_zpd] = FID_to_2Dspec(D,x,4);
+        [D_2DIR,x_apo] = FID_to_2Dspec(D,x,4);
 		for i=1:x.N2
-            [CL_w3, w1_axis, CLS] = trace_CL(x_zpd.w1,[2162.4-3,2162.4+3],x_zpd.w3,[2162.4-6,2162.4+6],D_2DIR(:,:,i),'Asymmetric Lorentzian');
+            [CL_w3, w1_axis, CLS] = trace_CL(x_apo.w1,[2162.4-3,2162.4+3],x_apo.w3,[2162.4-6,2162.4+6],D_2DIR(:,:,i),'Asymmetric Lorentzian');
             CLS_arr(i) = CLS;
 		end
 	%% fit CLS to obtain kubo time constants
