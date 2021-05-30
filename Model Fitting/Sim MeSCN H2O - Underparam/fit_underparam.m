@@ -32,14 +32,14 @@ close all
 	SIGN_lim = 1e-9;
 %% initialize figures
 	initial_fit_fig = figure;
-		set(initial_fit_fig,'Position',[300 200 800 300]);
+		set(initial_fit_fig,'Position',[300 200 600 250]);
 		initial_fit_layout = tiledlayout(initial_fit_fig,1,2,'Padding','compact','TileSpacing','compact');
 	pause_stop_fit_fig = uifigure('HandleVisibility','on');
 		set(pause_stop_fit_fig,'Position',[500 300 250 50]);
 		pause_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Pause Fitting','Value',0,'Position',[20,10, 100, 22]);
 		stop_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Stop Fitting','Value',0,'Position',[130,10, 100, 22]);
 	C_SIGN_fig = figure;
-		set(C_SIGN_fig,'Position',[50 50 400 600]);
+		set(C_SIGN_fig,'Position',[50 50 300 500]);
 		C_SIGN_layout = tiledlayout(C_SIGN_fig,2,1,'Padding','compact');
         annotation(C_SIGN_fig,'textbox',[0.01 0.95 0.05 0.03],'String','(A)','LineStyle','none','FitBoxToText','off');
 		annotation(C_SIGN_fig,'textbox',[0.01 0.46 0.05 0.03],'String','(B)','LineStyle','none','FitBoxToText','off');

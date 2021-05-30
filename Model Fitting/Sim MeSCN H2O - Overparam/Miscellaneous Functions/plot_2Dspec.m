@@ -39,7 +39,7 @@ function plot_2Dspec(varargin)
     else
         contourf(ax,x.w1,x.w3,spec',40);colorbar;
         hold on;line(ax,[0,1e4],[0,1e4],'Color','k','LineStyle','-');hold off;
-        xlabel('\omega_1 (cm^{-1})');ylabel('\omega_3 (cm^{-1})');
+        xlabel(ax,'Pump (cm^{-1})');ylabel(ax,'Probe (cm^{-1})');
 		xlim(ax,w1_lim);ylim(ax,w3_lim);
         title(ax,title_str);
 		ax.DataAspectRatio = [1,1,1];

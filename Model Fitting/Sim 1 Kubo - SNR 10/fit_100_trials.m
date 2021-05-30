@@ -39,26 +39,25 @@ close all
     addpath('Miscellaneous Functions\');
 %% initialize figures
 	initial_fit_fig = figure;
-		set(initial_fit_fig,'Position',[300 200 800 300]);
+		set(initial_fit_fig,'Position',[300 200 600 250]);
 		initial_fit_layout = tiledlayout(initial_fit_fig,1,2,'Padding','compact','TileSpacing','compact');
 	pause_stop_fit_fig = uifigure('HandleVisibility','on');
 		set(pause_stop_fit_fig,'Position',[500 300 250 50]);
 		pause_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Pause Fitting','Value',0,'Position',[20,10, 100, 22]);
 		stop_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Stop Fitting','Value',0,'Position',[130,10, 100, 22]);
 	C_SIGN_fig = figure;
-		set(C_SIGN_fig,'Position',[50 50 400 600]);
+		set(C_SIGN_fig,'Position',[50 50 300 500]);
 		C_SIGN_layout = tiledlayout(C_SIGN_fig,2,1,'Padding','compact');
 		annotation(C_SIGN_fig,'textbox',[0.01 0.95 0.05 0.03],'String','(A)','LineStyle','none','FitBoxToText','off');
 		annotation(C_SIGN_fig,'textbox',[0.01 0.46 0.05 0.03],'String','(B)','LineStyle','none','FitBoxToText','off');
 	update_fig = figure;
 		set(update_fig,'Position',[300 200 1200 600]);
-	trial_params_fig = figure;
-		set(trial_params_fig,'Position',[50 50 1200 300]);
-		trial_params_layout = tiledlayout(trial_params_fig,1,4,'Padding','compact','TileSpacing','compact');
-		annotation(trial_params_fig,'textbox',[0.03 0.9 0.025 0.085],'String','(A)','LineStyle','none','FitBoxToText','off');
-		annotation(trial_params_fig,'textbox',[0.26 0.9 0.025 0.085],'String','(B)','LineStyle','none','FitBoxToText','off');
-		annotation(trial_params_fig,'textbox',[0.49 0.9 0.025 0.085],'String','(C)','LineStyle','none','FitBoxToText','off');
-		annotation(trial_params_fig,'textbox',[0.72 0.9 0.025 0.085],'String','(D)','LineStyle','none','FitBoxToText','off');
+	template_fig = openfig('template figure.fig');
+		ax1 = template_fig.Children(1);
+		ax2 = template_fig.Children(2);
+		ax3 = template_fig.Children(3);
+		ax4 = template_fig.Children(4);
+		ax5 = template_fig.Children(5);
 
 %% for loop over different trials of noise and random starting points
 for trial=1:100
@@ -174,59 +173,59 @@ for trial=1:100
 		end
 	%% update plot of parameters obtained from all trials relative to true parameters
         true_vals = [p_true.kubo1_D2.val,p_true.kubo1_t.val,p_true.T_hom_inv.val];
-		ax = nexttile(trial_params_layout,1);
+		ax = ax3;
 			hold(ax,'on');
             line(ax,[0,4],[1,1],'Color','k','LineStyle','--');
             plot(ax,(1:3),model_fit_val./true_vals,'r.');
-            xlim(ax,[0,4]);ylim(ax,[0.8 1.2]);
+            xlim(ax,[0.5,3.5]);ylim(ax,[0.8 1.2]);
 			xticks(ax,[1 2 3])
             xticklabels(ax,{'\Delta^2_1','\tau_1','T_{hom}^{-1}'})
             set(ax,'Box','on');
-            ylabel(ax,'Fit / True');title(ax,sprintf('Parameters From %i Trials',trial))
+            ylabel(ax,'Fit / True');title(ax,sprintf('Parameters From\n%i Trials',trial))
 	%% update plot of parameters obtained from last trial relative to true parameters
 		true_vals = [p_true.kubo1_D2.val,p_true.kubo1_t.val,p_true.T_hom_inv.val];
-		ax = nexttile(trial_params_layout,2);
+		ax = ax2;
 			cla(ax);
 			hold(ax,'on');
 			line(ax,[0,4],[1,1],'Color','k','LineStyle','--');
             errorbar(ax,(1:3),model_fit_val./true_vals,model_fit_CI./true_vals,'r.');
-            xlim(ax,[0,4]);ylim(ax,[0.8 1.2]);
+            xlim(ax,[0.5,3.5]);ylim(ax,[0.8 1.2]);
 			xticks(ax,[1 2 3])
             xticklabels(ax,{'\Delta^2_1','\tau_1','T_{hom}^{-1}'})
 			set(ax,'Box','on');
-            ylabel(ax,'Fit / True (w/ est. 95% C.I.)');title(ax,[sprintf('Parameters From Trial %i',trial),newline,'(w/ est. 95% C.I.)'])
-	%% update plot of average parameters (w/ S.D.) obtained from all trials relative to true parameters
-		if trial>2
-			ax = nexttile(trial_params_layout,3);
-			cla(ax);
-			hold(ax,'on');
-			line(ax,[0,4],[1,1],'Color','k','LineStyle','--');
-			errorbar(ax,(1:3),mean(model_fit_val_arr,1)./true_vals,(std(model_fit_val_arr,0,1)./true_vals),'r.');
-			xlim(ax,[0,4]);ylim(ax,[0.8 1.2]);
-			xticks(ax,[1 2 3])
-            xticklabels(ax,{'\Delta^2_1','\tau_1','T_{hom}^{-1}'})
-			set(ax,'Box','on');
-			ylabel(ax,'\langleFit\rangle / True');title(ax,['Average Parameters',newline,sprintf('Over %i Trials (w/ S.D.)',trial)]);
-		end
+            ylabel(ax,'Fit / True');title(ax,{'Parameters An','Individual Trial'})
 	%% update plot of average parameters (w/ 95% C.I.) obtained from all trials relative to true parameters
 		if trial>2
-			ax = nexttile(trial_params_layout,4);
+			ax = ax1;
 			cla(ax);
 			hold(ax,'on');
 			line(ax,[0,4],[1,1],'Color','k','LineStyle','--');
 			errorbar(ax,(1:3),mean(model_fit_val_arr,1)./true_vals,(std(model_fit_val_arr,0,1)./true_vals)*tinv(1-0.05/2,trial-1)/sqrt(trial),'r.');
-			xlim(ax,[0,4]);ylim(ax,[0.9 1.1]);
+			xlim(ax,[0.5,3.5]);ylim(ax,[0.9 1.1]);
 			xticks(ax,[1 2 3])
             xticklabels(ax,{'\Delta^2_1','\tau_1','T_{hom}^{-1}'})
 			set(ax,'Box','on');
-			ylabel(ax,'\langleFit\rangle / True ');title(ax,['Average Parameters',newline,sprintf('Over %i Trials (w/ 95%% C.I.)',trial)]);
+			ylabel(ax,'\langleFit\rangle / True ');title(ax,['Average Parameters',newline,sprintf('Over %i Trials',trial)]);
 		end
+	%% add pump-probe and 2D IR
+		if trial == 1
+			%% 2D IR
+				[spec,x_apo] = FID_to_2Dspec(D,x,4);
+				plot_2Dspec(ax4,x_apo,[2130,2180],[2115,2185],spec(:,:,1),'2D IR Spectrum at T_W = 0')
+				ax4.DataAspectRatioMode = 'auto';
+			%% pump-probe
+				M = ILS_M(x,p_best_fit);
+				plot(ax5,x.w3,D(1,:,1),'k-',x.w3,M(1,:,1),'r-')
+				title(ax5,'Transient Absorption at T_W = 0');
+				xlabel(ax5,'Probe (cm^{-1})');ylabel(ax5,'\DeltaOD');
+		end
+	%% record video
 		if record_params_video
-			savefig(trial_params_fig,[params_dir,sprintf('\\trial%i.fig',trial)]);
+			savefig(template_fig,[params_dir,sprintf('\\trial%i.fig',trial)]);
 		end
 	%% save figure and data
 		savefig(C_SIGN_fig,'Output Data\C and SIGN.fig');
-		savefig(trial_params_fig,'Output Data\Trial Params.fig');
+		savefig(template_fig,'Output Data\Template Figure.fig');
 	%% save p_arr, p_best_fit, SIGN_arr and C_arr, then clear from memory
 		save('Output Data\results.mat','p_arr','p_best_fit','SIGN_arr','C_arr','aux');
 		clear p_arr SIGN_arr C_arr aux

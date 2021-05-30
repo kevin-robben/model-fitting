@@ -1,4 +1,41 @@
-function cond_num = plot_VIF(ax,x,p,w,aux)
+function cond_num = plot_VIF(varargin)
+%% Syntax:  
+%%              cond_num = plot_VIF(x,p)
+%%              cond_num = plot_VIF(x,p,w)
+%%              cond_num = plot_VIF(ax,x,p)
+%%              cond_num = plot_VIF(ax,x,p,w)
+	%% initialize inputs
+		if nargin == 2
+			x = varargin{1};
+			p = varargin{2};
+			f = figure;set(f,'Position',[100,100,300,250]);
+			ax = axes(f);
+			w = ones(x.N1,x.N3,x.N2);
+			fprintf('Warning: No weights input given. Assuming uniform weights.\n');
+		elseif nargin == 3
+			if isa(varargin{1},'matlab.graphics.axis.Axes')
+				ax = varargin{1};
+				x = varargin{2};
+				p = varargin{3};
+				w = ones(x.N1,x.N3,x.N2);
+				fprintf('Warning: No weights input given. Assuming uniform weights.\n');
+			else
+				x = varargin{1};
+				p = varargin{2};
+				w = varargin{3};
+				f = figure;set(f,'Position',[100,100,300,250]);
+				ax = axes(f);
+			end
+		elseif nargin == 4
+			ax = varargin{1};
+			x = varargin{2};
+			p = varargin{3};
+			w = varargin{4};
+		else
+			fprintf('\tERROR: syntax not defined for number of in arguments\n');
+		end
+	%% initialize aux
+		aux = ILS_initialize_aux(p);
 	%% center and normalize JwJ
 		f = @(x,p) M_3rd_order_kubo(x,p);
 		J = Jacobian_f(f,x,p,aux).*reshape(w,[x.numel,1]);
@@ -16,7 +53,7 @@ function cond_num = plot_VIF(ax,x,p,w,aux)
 			ax_ticks(i) = i;
 		end
 		hold(ax,'on');
-		set(ax,'xtick',ax_ticks,'xticklabels',param_labels)
+		set(ax,'xtick',ax_ticks,'xticklabels',param_labels,'TickLength',[0.025,0])
 		ax.XLim(1) = 1;
 		xlim(ax,[0.5,aux.num_var+0.5])
 		ylabel('VIF')
