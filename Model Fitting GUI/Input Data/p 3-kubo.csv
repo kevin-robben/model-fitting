@@ -1,0 +1,15 @@
+Row,Field Name,Type,Value,Lower Bound,Upper Bound,Units,Plot Label,Std. Dev.,95% C.I.
+1,A01,variable,0.0001,1e-05,0.001,arb. unit,A_{01},0,0
+2,A12,variable,0.0001,1e-05,0.001,arb. unit,A_{12},0,0
+3,w_01,variable,2155,2153,2157,cm^{-1},\omega_{01},0,0
+4,cal_err,variable,0,-5,5,cm^{-1},\delta\omega_1,0,0
+5,Anh,variable,25,23,27,cm^{-1},\Delta_{Anh},0,0
+6,kubo_anh_fctr,variable,1,0.5,1.5,unitless,\beta,0,0
+7,T_LT_inv,variable,0.03,0.01,0.4,ps^{-1},T_{LT}^{-1},0,0
+8,T_hom_inv,variable,0.31,0.1,2,ps^{-1},T_{Hom}^{-1},0,0
+9,kubo1_t,variable,0.5,0.1,2,ps,\tau_1,0,0
+10,kubo1_D2,variable,30,0,60,cm^{-2},\Delta_1^2,0,0
+11,kubo2_t,variable,5,1,20,units,\tau_2,0,0
+12,kubo2_D2,variable,10,0.1,50,units,\Delta_2^2,0,0
+13,kubo3_t,variable,30,10,100,units,\tau_3,0,0
+14,kubo3_D2,variable,6,0,30,units,\Delta_3^2,0,0
