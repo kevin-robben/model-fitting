@@ -1,8 +1,8 @@
 Row,Field Name,Type,Value,Lower Bound,Upper Bound,Units,Plot Label,Std. Dev.,95% C.I.
 1,A01,variable,0.0001,5.00E-05,0.0002,arb. unit,A_{01},0,0
 2,A12,variable,0.0001,5.00E-05,0.0002,arb. unit,A_{12},0,0
-3,w_01,variable,2080,2079,2081,cm^{-1},\omega_{01},0,0
-4,cal_err,variable,0,-1,1,cm^{-1},\delta\omega_1,0,0
+3,w_01,variable,2080,2078,2082,cm^{-1},\omega_{01},0,0
+4,cal_err,variable,0,-2,2,cm^{-1},\delta\omega_1,0,0
 5,Anh,variable,25,24,26,cm^{-1},\Delta_{Anh},0,0
 6,kubo_anh_fctr,variable,1,0.5,1.5,unitless,\beta,0,0
 7,T_LT_inv,variable,0.0333,0.01,0.1,ps^{-1},T_{LT}^{-1},0,0
