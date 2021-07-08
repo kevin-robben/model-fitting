@@ -24,20 +24,13 @@ close all
 %% set SIGN limit
 	SIGN_lim = 1e-9;
 %% initialize figures
-	initial_fit_fig = figure;
-		set(initial_fit_fig,'Position',[300 200 800 300]);
-		initial_fit_layout = tiledlayout(initial_fit_fig,1,2,'Padding','compact','TileSpacing','compact');
+	initial_fit_fig = openfig('Templates\Initial_fit_template.fig');
+	C_SIGN_fig = openfig('Templates\C_and_SIGN_template.fig');
+	update_fig = figure;set(update_fig,'Position',[20 50 1500 700]);
 	pause_stop_fit_fig = uifigure('HandleVisibility','on');
 		set(pause_stop_fit_fig,'Position',[500 300 250 50]);
 		pause_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Pause Fitting','Value',0,'Position',[20,10, 100, 22]);
 		stop_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Stop Fitting','Value',0,'Position',[130,10, 100, 22]);
-	C_SIGN_fig = figure;
-		set(C_SIGN_fig,'Position',[50 50 300 500]);
-		C_SIGN_layout = tiledlayout(C_SIGN_fig,2,1,'Padding','compact');
-		annotation(C_SIGN_fig,'textbox',[0.01 0.95 0.05 0.03],'String','(A)','LineStyle','none','FitBoxToText','off');
-		annotation(C_SIGN_fig,'textbox',[0.01 0.46 0.05 0.03],'String','(B)','LineStyle','none','FitBoxToText','off');
-	update_fig = figure;
-		set(update_fig,'Position',[20 50 1500 700]);
 %% load data
 	load('Input Data\2020 data (MATLAB-Ready).mat');
 %% load p
@@ -48,15 +41,12 @@ close all
 	ax = nexttile(initial_fit_layout,1);
 		cla(ax);
 		M_init = ILS_M(x,p);
-		n_Tw = 1;n_t1 = 1;
-		plot(ax,x.w3,real(D_FID(n_t1,:,n_Tw)),'k-',x.w3,real(M_init(n_t1,:,n_Tw)),'r--');
+		plot(ax,x.w3,real(D_FID(1,:,1)),'k-',x.w3,real(M_init(1,:,1)),'r--');
 		xlim(ax,w3_plot_lim);
-		xlabel(ax,'Probe Frequency (cm^{-1})');ylabel('\DeltaOD');title(ax,'TA Comparison');
 		legend(ax,'TA from Data','TA from Initial Guess')
 	ax = nexttile(initial_fit_layout,2);
 		cla(ax);
 		plot(ax,x.t1,real(D_FID(:,nearest_index(x.w3,p.w_01.val),1)),'k-',x.t1,real(M_init(:,nearest_index(x.w3,p.w_01.val),1)),'r--');
-		xlabel(ax,'\tau_1 (ps)');ylabel('\DeltaOD');title(ax,'FID Comparison');
 		legend(ax,'FID from Data','FID from Initial Guess')
 %% iterative fitting:
 	timerval = tic;
@@ -95,23 +85,17 @@ close all
 		stop_fit_btn.Value = 0;
 	end
 %% update cost function and SIGN plot
-	ax = nexttile(C_SIGN_layout,1);
-		C_line = plot(ax,C_arr);
+	ax = findobj(initial_fit_fig,'Tag','TA');
 		set(ax,'YMinorTick','on','YScale','log','Box','on');
-		ylabel(ax,'C');xlabel(ax,'Iteration');title(ax,'Cost Function');
 		max_iter = numel(C_line.XData);
 		xlim([1,max_iter]);
-	ax = nexttile(C_SIGN_layout,2);
-		ax.Box = 'on';
-		hold(ax,'on');
-		lines = plot(ax,SIGN_arr,'Color',C_line.Color);
+	ax = findobj(initial_fit_fig,'Tag','FID');lines = plot(ax,SIGN_arr,'Color',C_line.Color);
 		plot(ax,ones(1,500)*SIGN_lim,'--','Color',[0.5,0.5,0.5]);
 		set(ax,'YMinorTick','on','YScale','log');
-		xlabel(ax,'Iteration');ylabel(ax,'$$\widetilde{|\nabla{C}|}$$','Interpreter','LaTeX');title(ax,'Scale Invariant Gradient Norm (SIGN)');
 		xlim([1,max_iter]);
 		savefig(C_SIGN_fig,[output_dir,'\C and SIGN.fig']);
 %% determine best fit
-	[M,i] = min(SIGN_arr);
+	[M,i] = min(C_arr);
 	p_best_fit_2020 = p_arr(i);
 %% print and save fit
 	print_params(p_best_fit_2020)

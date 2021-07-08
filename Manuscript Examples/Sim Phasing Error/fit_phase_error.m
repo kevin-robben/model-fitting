@@ -1,5 +1,9 @@
 clear all
 close all
+%% add paths
+    addpath('ILS Functions\');
+    addpath('Lineshape Functions\');
+    addpath('Miscellaneous Functions\');
 %% set random number generator seed to 1
 	rng('default');
 	rng(1);
@@ -30,39 +34,30 @@ close all
 	w1_plot_lim = [2020,2120];
 	w3_plot_lim = [2020,2120];
 %% load p
-	load('Input Data\p.mat');
+	p = load_params('Input Data\p.csv');
 	p_true = p;
 	p.phi.var = 0; % comment this line to enable fitting the phase error
-%% load data
-    load('Input Data\FID.mat');
+%% make axes
+	Tw = [ 0.4:0.2:2 , 2.5:0.5:5 , 6:1:10 , 12:2:20, 25:5:40, 50:10:100 ];
+    x = gen_x([0,4],32,2010,[2020,2120],128,Tw,'real');
+%% simulate true (noiseless) FID
+	FID = ILS_M(x,p);
 %% set SIGN limit
 	SIGN_lim = 1e-9;
-%% add paths
-    addpath('ILS Functions\');
-    addpath('Lineshape Functions\');
-    addpath('Miscellaneous Functions\');
 %% initialize figures
-	initial_fit_fig = figure;
-		set(initial_fit_fig,'Position',[300 200 600 300]);
-		initial_fit_layout = tiledlayout(initial_fit_fig,1,2,'Padding','compact','TileSpacing','compact');
-	pause_stop_fit_fig = uifigure('HandleVisibility','on');
-		set(pause_stop_fit_fig,'Position',[500 300 250 50]);
-		pause_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Pause Fitting','Value',0,'Position',[20,10, 100, 22]);
-		stop_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Stop Fitting','Value',0,'Position',[130,10, 100, 22]);
-	C_SIGN_fig = figure;
-		set(C_SIGN_fig,'Position',[50 50 300 500]);
-		C_SIGN_layout = tiledlayout(C_SIGN_fig,2,1,'Padding','compact');
-		annotation(C_SIGN_fig,'textbox',[0.01 0.95 0.05 0.03],'String','(A)','LineStyle','none','FitBoxToText','off');
-		annotation(C_SIGN_fig,'textbox',[0.01 0.46 0.05 0.03],'String','(B)','LineStyle','none','FitBoxToText','off');
-	update_fig = figure;
-		set(update_fig,'Position',[20 50 1500 700]);
-	trial_params_fig = openfig('template figure.fig');
+	initial_fit_fig = openfig('Templates\Initial_fit_template.fig');
+	C_SIGN_fig = openfig('Templates\C_and_SIGN_template.fig');
+	trial_params_fig = openfig('Templates\template figure.fig');
 		ax1 = trial_params_fig.Children(1);
 		ax2 = trial_params_fig.Children(2);
 		ax3 = trial_params_fig.Children(3);
 		ax4 = trial_params_fig.Children(4);
 		ax5 = trial_params_fig.Children(5);
-		
+	update_fig = figure;set(update_fig,'Position',[20 50 1500 700]);
+	pause_stop_fit_fig = uifigure('HandleVisibility','on');
+		set(pause_stop_fit_fig,'Position',[500 300 250 50]);
+		pause_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Pause Fitting','Value',0,'Position',[20,10, 100, 22]);
+		stop_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Stop Fitting','Value',0,'Position',[130,10, 100, 22]);	
 %% for loop over different trials of noise and random starting points
 for trial=1:100
 	%% add noise
@@ -85,18 +80,13 @@ for trial=1:100
 	%% define initial (guess) model parameters as a random vector in boundary space
 		p = ILS_rand_params(p,aux);
 	%% show comparison between initial guess and data for TA spectrum
-		ax = nexttile(initial_fit_layout,1);
-			cla(ax);
+		ax = findobj(initial_fit_fig,'Tag','TA');
 			M_init = ILS_M(x,p);
-			n_Tw = 1;n_t1 = 1;
-			plot(ax,x.w3,w_w3.*real(D(n_t1,:,n_Tw)),'k-',x.w3,w_w3.*real(M_init(n_t1,:,n_Tw)),'r--');
+			plot(ax,x.w3,real(D(1,:,1)),'k-',x.w3,real(M_init(1,:,1)),'r--');
 			xlim(ax,w3_plot_lim);
-			xlabel(ax,'Probe Frequency (cm^{-1})');ylabel('\DeltaOD');title(ax,'TA Comparison');
 			legend(ax,'TA from Data','TA from Initial Guess')
-		ax = nexttile(initial_fit_layout,2);
-			cla(ax);
-			plot(ax,x.t1,w_t1.*real(D(:,nearest_index(x.w3,p.w_01.val),1)),'k-',x.t1,w_t1.*real(M_init(:,nearest_index(x.w3,p.w_01.val),1)),'r--');
-			xlabel(ax,'\tau_1 (ps)');ylabel('\DeltaOD');title(ax,'FID Comparison');
+		ax = findobj(initial_fit_fig,'Tag','FID');
+			plot(ax,x.t1,real(D(:,nearest_index(x.w3,p.w_01.val),1)),'k-',x.t1,real(M_init(:,nearest_index(x.w3,p.w_01.val),1)),'r--');
 			legend(ax,'FID from Data','FID from Initial Guess')
 	%% iterative fitting:
 		timerval = tic;
