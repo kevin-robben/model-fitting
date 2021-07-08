@@ -2,7 +2,7 @@ function fig = compare_2Dspec(x,w1_plot_lim,w3_plot_lim,T,Data_spec,Model_spec,f
 	n_Tw = nearest_index(x.Tw,T);
 	[n1_min,n1_max] = nearest_index(x.w3,w1_plot_lim);
 	[n3_min,n3_max] = nearest_index(x.w3,w3_plot_lim);
-	fig = openfig('comparison template.fig');
+	fig = openfig('.\Templates\comparison template.fig');
 	data_ax = fig.Children(2); data_pos = [data_ax.Position;data_ax.InnerPosition;data_ax.OuterPosition];
 	model_ax = fig.Children(4); model_pos =[model_ax.Position;model_ax.InnerPosition;model_ax.OuterPosition];
 	res_ax = fig.Children(6); res_pos = [res_ax.Position;res_ax.InnerPosition;res_ax.OuterPosition];

@@ -55,7 +55,7 @@ close all
 		legend(ax,'TA from Data','TA from Initial Guess')
 	ax = nexttile(initial_fit_layout,2);
 		cla(ax);
-		plot(ax,x.t1,w_t1.*real(D_FID(:,nearest_index(x.w3,p.w_01.val),1)),'k-',x.t1,w_t1.*real(M_init(:,nearest_index(x.w3,p.w_01.val),1)),'r--');
+		plot(ax,x.t1,real(D_FID(:,nearest_index(x.w3,p.w_01.val),1)),'k-',x.t1,real(M_init(:,nearest_index(x.w3,p.w_01.val),1)),'r--');
 		xlabel(ax,'\tau_1 (ps)');ylabel('\DeltaOD');title(ax,'FID Comparison');
 		legend(ax,'FID from Data','FID from Initial Guess')
 %% iterative fitting:

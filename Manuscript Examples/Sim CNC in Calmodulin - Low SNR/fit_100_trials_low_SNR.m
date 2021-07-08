@@ -76,18 +76,13 @@ for trial=1:100
 	%% define initial (guess) model parameters as a random vector in boundary space
 		p = ILS_rand_params(p,aux);
 	%% show comparison between initial guess and data for TA spectrum
-		ax = nexttile(initial_fit_layout,1);
-			cla(ax);
+		ax = findobj(initial_fit_fig,'Tag','TA');
 			M_init = ILS_M(x,p);
-			n_Tw = 1;n_t1 = 1;
-			plot(ax,x.w3,w_w3.*real(D(n_t1,:,n_Tw)),'k-',x.w3,w_w3.*real(M_init(n_t1,:,n_Tw)),'r--');
+			plot(ax,x.w3,real(D(1,:,1)),'k-',x.w3,real(M_init(1,:,1)),'r--');
 			xlim(ax,w3_plot_lim);
-			xlabel(ax,'Probe Frequency (cm^{-1})');ylabel('\DeltaOD');title(ax,'TA Comparison');
 			legend(ax,'TA from Data','TA from Initial Guess')
-		ax = nexttile(initial_fit_layout,2);
-			cla(ax);
+		ax = findobj(initial_fit_fig,'Tag','FID');
 			plot(ax,x.t1,w_t1.*real(D(:,nearest_index(x.w3,p.w_01.val),1)),'k-',x.t1,w_t1.*real(M_init(:,nearest_index(x.w3,p.w_01.val),1)),'r--');
-			xlabel(ax,'\tau_1 (ps)');ylabel('\DeltaOD');title(ax,'FID Comparison');
 			legend(ax,'FID from Data','FID from Initial Guess')
 	%% iterative fitting:
 		timerval = tic;
@@ -161,29 +156,24 @@ for trial=1:100
 		model_fit_CI = [ p_best_fit.kubo1_D2.CI, p_best_fit.kubo2_D2.CI, p_best_fit.kubo1_t.CI, p_best_fit.T_hom_inv.CI];
         model_fit_val_arr(trial,:) = model_fit_val;
     %% update cost function and SIGN plot
-        ax = nexttile(C_SIGN_layout,1);
-            hold(ax,'on');
+        ax = findobj(C_SIGN_fig,'Tag','A');
             C_line = plot(ax,C_arr);
 			set(ax,'YMinorTick','on','YScale','log','Box','on');
-            ylabel(ax,'C');xlabel(ax,'Iteration');title(ax,'Cost Function');
-			if trial == 1
+            if trial == 1
 				max_iter = numel(C_line.XData);
-			else
-				if numel(C_line.XData) > max_iter
+            else
+                if numel(C_line.XData) > max_iter
 					max_iter = numel(C_line.XData);
-				end
-			end
+                end
+            end
 			xlim([1,max_iter]);
-		ax = nexttile(C_SIGN_layout,2);
-			ax.Box = 'on';
-            hold(ax,'on');
+		ax = findobj(C_SIGN_fig,'Tag','B');
             lines = plot(ax,SIGN_arr,'Color',C_line.Color);
 			if trial == 1
 				plot(ax,ones(1,500)*SIGN_lim,'--','Color',[0.5,0.5,0.5]);
 			end
 			set(ax,'YMinorTick','on','YScale','log');
-            xlabel(ax,'Iteration');ylabel(ax,'$$\widetilde{|\nabla{C}|}$$','Interpreter','LaTeX');title(ax,'Scale Invariant Gradient Norm (SIGN)');
-			xlim([1,max_iter]);
+            xlim([1,max_iter]);
 		if record_C_SIGN_video
 			savefig(C_SIGN_fig,[C_SIGN_dir,sprintf('\\trial%i.fig',trial)]);
 		end

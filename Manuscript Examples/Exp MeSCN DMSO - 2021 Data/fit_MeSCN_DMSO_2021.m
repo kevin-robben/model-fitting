@@ -53,6 +53,7 @@ close all
 			ax.YTickLabel(k) = {num2str(sum(mask(k,:)))};
 	end
 	ax.YTickLabel = flip(ax.YTickLabel);
+	ax.XLim(1) = 10^(-1);
 	ax.XLim(2) = 10^3;
 	title(ax,'Sampling Masks');
 	savefig('Output Data\Sampling Masks.fig');
