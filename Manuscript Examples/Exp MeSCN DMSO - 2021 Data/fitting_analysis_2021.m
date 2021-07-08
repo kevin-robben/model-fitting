@@ -18,60 +18,22 @@ close all
 	w1_plot_lim = [2110,2180];
 	w3_plot_lim = [2110,2180];
 %% initialize figures
-	LA_fig = figure;
-		set(LA_fig,'Position',[50 50 300 500]);
-		LA_layout = tiledlayout(LA_fig,2,1,'Padding','compact','TileSpacing','compact');
-		fit_LA_ax = nexttile(LA_layout,1);
-			axes(fit_LA_ax)
-			fit_LA_ax.Box = 'on';
-		CLS_LA_ax = nexttile(LA_layout,2);
-			axes(CLS_LA_ax)
-			CLS_LA_ax.Box = 'on';
-	LA_fig2 = figure;
-		set(LA_fig2,'Position',[50 50 300 500]);
-		LA_layout2 = tiledlayout(LA_fig2,2,1,'Padding','compact','TileSpacing','compact');
-		fit_LA_ax2 = nexttile(LA_layout2,1);
-			axes(fit_LA_ax2)
-			fit_LA_ax2.Box = 'on';
-		CLS_LA_ax2 = nexttile(LA_layout2,2);
-			axes(CLS_LA_ax2)
-			CLS_LA_ax2.Box = 'on';
-	CLS_fig = figure;
-		set(CLS_fig,'Position',[50 50 300 500]);
-		CLS_layout = tiledlayout(CLS_fig,2,1,'Padding','compact','TileSpacing','compact');
-		CLS_2020vs2021_ax = nexttile(CLS_layout,1);
-			axes(CLS_2020vs2021_ax)
-			CLS_2020vs2021_ax.Box = 'on';
-		CLS_2021_ax = nexttile(CLS_layout,2);
-			axes(CLS_2021_ax)
-			CLS_2021_ax.Box = 'on';
-	params_fig = figure;
-		set(params_fig,'Position',[50 50 300 500]);
-		params_layout = tiledlayout(params_fig,3,2,'Padding','compact','TileSpacing','compact');
-		CLS_kubo1_t_ax = nexttile(params_layout,1);
-			axes(CLS_kubo1_t_ax)
-			CLS_kubo1_t_ax.Box = 'on';
-			hold(CLS_kubo1_t_ax,'on');
-		fit_kubo1_t_ax = nexttile(params_layout,2);
-			axes(fit_kubo1_t_ax)
-			fit_kubo1_t_ax.Box = 'on';
-			hold(fit_kubo1_t_ax,'on');
-		CLS_kubo1_D2_ax = nexttile(params_layout,3);
-			axes(CLS_kubo1_D2_ax)
-			CLS_kubo1_D2_ax.Box = 'on';
-			hold(CLS_kubo1_D2_ax,'on');
-		fit_kubo1_D2_ax = nexttile(params_layout,4);
-			axes(fit_kubo1_D2_ax)
-			fit_kubo1_D2_ax.Box = 'on';
-			hold(fit_kubo1_D2_ax,'on');
-		CLS_T_hom_inv_ax = nexttile(params_layout,5);
-			axes(CLS_T_hom_inv_ax)
-			CLS_T_hom_inv_ax.Box = 'on';
-			hold(CLS_T_hom_inv_ax,'on');
-		fit_T_hom_inv_ax = nexttile(params_layout,6);
-			axes(fit_T_hom_inv_ax)
-			fit_T_hom_inv_ax.Box = 'on';
-			hold(fit_T_hom_inv_ax,'on');
+	LA_fig = openfig('Templates\linear absorption template.fig');
+		fit_LA_ax = LA_fig.Children(1);
+		CLS_LA_ax = LA_fig.Children(2);
+	LA_fig2 = openfig('Templates\linear absorption template.fig');
+		fit_LA_ax2 = LA_fig2.Children(1);
+		CLS_LA_ax2 = LA_fig2.Children(2);
+	CLS_fig = openfig('Templates\CLS template.fig');
+		CLS_2020vs2021_ax = CLS_fig.Children(1);
+		CLS_2021_ax = CLS_fig.Children(2);
+	params_fig = openfig('Templates\params template.fig');
+		CLS_kubo1_t_ax = findobj(params_fig,'Tag','A');
+		fit_kubo1_t_ax = findobj(params_fig,'Tag','D');
+		CLS_kubo1_D2_ax = findobj(params_fig,'Tag','B');
+		fit_kubo1_D2_ax = findobj(params_fig,'Tag','E');
+		CLS_T_hom_inv_ax = findobj(params_fig,'Tag','C');
+		fit_T_hom_inv_ax = findobj(params_fig,'Tag','F');
 %% plot parameters from fits
 	%% kubo correlation time
 		ax = fit_kubo1_t_ax;
@@ -97,9 +59,7 @@ close all
 			l.MarkerFaceColor = [0.72,0.27,1.00];
 		%% final touches
 			xlim(ax,[0.5,size(mask,1)+1.5])
-			xlabel(ax,'Num. of T_w Points')
-			ylabel(ax,p_best_fit(1).kubo1_t.units);
-			title(ax,{'Kubo \tau'});
+			ylim(ax,[3,4])
 	%% kubo frequency amplitude squared
 		ax = fit_kubo1_D2_ax;
 		ax.XTick = 1:(numel(US_fctr)+1);
@@ -124,9 +84,7 @@ close all
 			l.MarkerFaceColor = [0.72,0.27,1.00];
 		%% final touches
 			xlim(ax,[0.5,size(mask,1)+1.5])
-			xlabel(ax,'Num. of T_w Points')
-			ylabel(ax,p_best_fit(1).kubo1_D2.units);
-			title(ax,{'Kubo \Delta^2'});
+			ylim(ax,[13,15.5])
 	%% inverse homogeneous lifetime
 		ax = fit_T_hom_inv_ax;
 		ax.XTick = 1:(numel(US_fctr)+1);
@@ -151,9 +109,7 @@ close all
 			l.MarkerFaceColor = [0.72,0.27,1.00];
 		%% final touches
 			xlim(ax,[0.5,size(mask,1)+1.5])
-			xlabel(ax,'Num. of T_w Points')
-			ylabel(ax,p_best_fit(1).T_hom_inv.units);
-			title(ax,{'T_{hom}^{-1}'});
+			ylim(ax,[0.25,0.5])
 %% reset p_fit to results from 45 points mask
 	p_fit = p_best_fit(1);
 	p_fit.w_01.val = p_fit.w_01.val-0.6;
@@ -205,9 +161,6 @@ close all
 		ylabel(CLS_2021_ax,'CLS');xlabel(CLS_2021_ax,'T_{w} (ps)')
 		set(CLS_2021_ax,'YMinorTick','on','YScale','log','YTick',[0.05 0.1 0.2 0.3 0.4 0.5]);
 		legend(CLS_2021_ax,'2021 Data (0-1)','Fit','2021 Data (1-2)','Fit');
-		
-		annotation(CLS_fig,'textbox',[0.01 0.953 0.1 0.04],'String','(A)','LineStyle','none','FitBoxToText','off');
-		annotation(CLS_fig,'textbox',[0.01 0.473 0.1 0.04],'String','(B)','LineStyle','none','FitBoxToText','off');
 
 		savefig(CLS_fig,'Output Data\CLS Log Axis.fig')
 		
@@ -220,7 +173,7 @@ close all
 	bruker_abs = match_abs(probe_w3,probe_abs,bruker_w3,bruker_abs); %normalize and offset to match model
 	h = plot(fit_LA_ax,probe_w3,probe_abs,'k-',probe_w3,bruker_abs,'b-.',x.w3,model_abs,'r--');
 	set(h,'LineWidth',2);
-	legend(fit_LA_ax,'Probe','FTIR',['Model Fitting',newline,' 2D IR']);
+	legend(fit_LA_ax,'Probe','FTIR',['Model',newline,'Fitting',newline,'2D IR']);
 	set(fit_LA_ax,'YTick',[0 0.2 0.4 0.6 0.8 1],'YTickLabel',{'0','0.2','0.4','0.6','0.8','1'})
 	xlim(fit_LA_ax,[2130,2180]);ylim(fit_LA_ax,[0,1.1])
 	xlabel(fit_LA_ax,'Frequency (cm^{-1})');ylabel(fit_LA_ax,'Absorbance (norm.)');
@@ -229,7 +182,7 @@ close all
 	bruker_abs = bruker_abs/max(bruker_abs); %normalize and offset to match model
 	h = plot(fit_LA_ax2,probe_w3,probe_abs,'k-',probe_w3,bruker_abs,'b-.',x.w3,model_abs,'r--');
 	set(h,'LineWidth',2);
-	legend(fit_LA_ax2,'Probe','FTIR',['Model Fitting',newline,' 2D IR']);
+	legend(fit_LA_ax2,'Probe','FTIR',['Model',newline,'Fitting',newline,'2D IR']);
 	set(fit_LA_ax2,'YTick',[0 0.2 0.4 0.6 0.8 1],'YTickLabel',{'0','0.2','0.4','0.6','0.8','1'})
 	xlim(fit_LA_ax2,[2130,2180]);ylim(fit_LA_ax2,[0,1.1])
 	xlabel(fit_LA_ax2,'Frequency (cm^{-1})');ylabel(fit_LA_ax2,'Absorbance (norm.)');
@@ -277,8 +230,6 @@ close all
 	set(CLS_LA_ax,'YTick',[0 0.2 0.4 0.6 0.8 1],'YTickLabel',{'0','0.2','0.4','0.6','0.8','1'})
 	xlim(CLS_LA_ax,[2130,2180]);ylim(CLS_LA_ax,[-0.05,1.02]);
 	xlabel(CLS_LA_ax,'Frequency (cm^{-1})');ylabel(CLS_LA_ax,'Absorbance (norm.)');
-	annotation(LA_fig,'textbox',[0.0115 0.94 0.079 0.0467],'String',{'(A)'},'LineStyle','none','FontSize',12,'FitBoxToText','off');
-	annotation(LA_fig,'textbox',[0.0115 0.47 0.079 0.0467],'String',{'(B)'},'LineStyle','none','FontSize',12,'FitBoxToText','off');
 	savefig(LA_fig,'Output Data\Linear Absorbance.fig')
 	save('Output Data\Linear Absorbance Comparisons.mat','f_90','f_80','f_70');
 %% plot linear absorption fits (scaled for comparing FWHM)
@@ -296,8 +247,6 @@ close all
 	set(CLS_LA_ax2,'YTick',[0 0.2 0.4 0.6 0.8 1],'YTickLabel',{'0','0.2','0.4','0.6','0.8','1'})
 	xlim(CLS_LA_ax2,[2130,2180]);ylim(CLS_LA_ax2,[-0.05,1.02]);
 	xlabel(CLS_LA_ax2,'Frequency (cm^{-1})');ylabel(CLS_LA_ax2,'Absorbance (norm.)');
-	annotation(LA_fig2,'textbox',[0.0115 0.94 0.079 0.0467],'String',{'(A)'},'LineStyle','none','FontSize',12,'FitBoxToText','off');
-	annotation(LA_fig2,'textbox',[0.0115 0.47 0.079 0.0467],'String',{'(B)'},'LineStyle','none','FontSize',12,'FitBoxToText','off');
 	savefig(LA_fig2,'Output Data\Linear Absorbance (scaled for FWHM).fig')
 	save('Output Data\Linear Absorbance Comparisons (FWHM).mat','f_90','f_80','f_70');
 %% add kubo time constant for 2021 data
@@ -313,7 +262,6 @@ close all
 	l = errorbar(CLS_kubo1_t_ax,2,CLS_fit_01_2020.tau1,CI_intvl_2020/2,CI_intvl_2020/2,'ms');
 	l.MarkerSize = 4;
 	l.MarkerFaceColor = [1.00,0.07,0.65];
-	legend(CLS_kubo1_t_ax,'2021 Data','2020 Data');
 %% add kubo D^2 and inv_T_hom for f1
 	%% Append upper 70% data
 		f_70_CI = confint(f_70);
@@ -368,27 +316,18 @@ close all
 		xlim(CLS_kubo1_t_ax,[0,3]);
 		xlim(CLS_kubo1_D2_ax,[0.5,3.5]);
 		xlim(CLS_T_hom_inv_ax,[0.5,3.5]);
-	%% adjust x-axis tick marks and tick labels
-		set(CLS_kubo1_t_ax,'XTick',[1,2],'XTickLabel',{'45','32'})
-		set(CLS_kubo1_D2_ax,'XTick',[1 2 3],'XTickLabel',{'70%','80%','90%'})
-		set(CLS_T_hom_inv_ax,'XTick',[1 2 3],'XTickLabel',{'70%','80%','90%'})
-	%% add titles, x-label and y-label for CLS data plots
-		xlabel(CLS_kubo1_t_ax,'Num. T_w Points')
-		xlabel(CLS_kubo1_D2_ax,'Fitting Range')
-		xlabel(CLS_T_hom_inv_ax,'Fitting Range')
-		ylabel(CLS_kubo1_t_ax,p_best_fit(1).kubo1_t.units);
-		ylabel(CLS_kubo1_D2_ax,p_best_fit(1).kubo1_D2.units);
-		ylabel(CLS_T_hom_inv_ax,p_best_fit(1).T_hom_inv.units);
-		title(CLS_kubo1_t_ax,{'Kubo \tau'});
-		title(CLS_kubo1_D2_ax,{'Kubo \Delta^2'});
-		title(CLS_T_hom_inv_ax,{'T_{hom}^{-1}'});
-	%% add annotation
-		annotation(params_fig,'textbox',[0.01 0.95 0.10 0.045],'String',{'(A)'},'LineStyle','none');
-		annotation(params_fig,'textbox',[0.01 0.61 0.10 0.045],'String',{'(B)'},'LineStyle','none');
-		annotation(params_fig,'textbox',[0.01 0.29 0.10 0.045],'String',{'(C)'},'LineStyle','none');
-		annotation(params_fig,'textbox',[0.49 0.95 0.10 0.045],'String',{'(D)'},'LineStyle','none');
-		annotation(params_fig,'textbox',[0.49 0.61 0.10 0.045],'String',{'(E)'},'LineStyle','none');
-		annotation(params_fig,'textbox',[0.49 0.29 0.10 0.045],'String',{'(F)'},'LineStyle','none');
+	%% adjust y-axis limits
+		ylim(CLS_kubo1_t_ax,[3,6.1]);
+		ylim(CLS_kubo1_D2_ax,[5,15]);
+		ylim(CLS_T_hom_inv_ax,[0.3,0.8]);
+		ylim(fit_kubo1_t_ax,[3,4]);
+		ylim(fit_kubo1_D2_ax,[13,15.5]);
+		ylim(fit_T_hom_inv_ax,[0.25,0.5]);
+	%% annotations
+		annotation(params_fig,'textbox',[0.2583 0.7424 0.1483 0.0416],'Color',[0 0 1],'String','2021','LineStyle','none','FitBoxToText','off');
+		annotation(params_fig,'textbox',[0.129 0.8976 0.1483 0.0416],'Color',[1 0 1],'String','2020','LineStyle','none','FitBoxToText','off');
+		annotation(params_fig,'textbox',[0.782 0.881 0.1483 0.0416],'Color',[1 0 0],'String','2021','LineStyle','none','FitBoxToText','off');
+		annotation(params_fig,'textbox',[0.554 0.8832 0.14833 0.0416],'Color',[0.718 0.2745 1],'String','2020','LineStyle','none','FitBoxToText','off');
 	%% save figure
 		savefig(params_fig,'Output Data\Params.fig');
 %% remove paths
