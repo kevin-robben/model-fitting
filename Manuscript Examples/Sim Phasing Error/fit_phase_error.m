@@ -32,7 +32,7 @@ close all
 %% load p
 	load('Input Data\p.mat');
 	p_true = p;
-	p.phi.var = 0; % comment out this line to enable fitting the phase error
+	p.phi.var = 0; % comment this line to enable fitting the phase error
 %% load data
     load('Input Data\FID.mat');
 %% set SIGN limit

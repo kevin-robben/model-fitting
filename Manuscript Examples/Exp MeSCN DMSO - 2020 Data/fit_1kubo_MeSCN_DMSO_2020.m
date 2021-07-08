@@ -1,7 +1,9 @@
 clear all
 close all
-%% initialize model
-	sim_1kubo_MeSCN_DMSO_2020;
+%% add paths
+    addpath('ILS Functions\');
+    addpath('Lineshape Functions\');
+    addpath('Miscellaneous Functions\');
 %% set plot limits
 	w1_plot_lim = [2110,2180];
 	w3_plot_lim = [2110,2180];
@@ -21,10 +23,6 @@ close all
 	end
 %% set SIGN limit
 	SIGN_lim = 1e-9;
-%% add paths
-    addpath('ILS Functions\');
-    addpath('Lineshape Functions\');
-    addpath('Miscellaneous Functions\');
 %% initialize figures
 	initial_fit_fig = figure;
 		set(initial_fit_fig,'Position',[300 200 800 300]);
@@ -41,42 +39,23 @@ close all
 	update_fig = figure;
 		set(update_fig,'Position',[20 50 1500 700]);
 %% load data
-	load('Input Data\FID.mat');
-%% load model
-	load('Input Data\p.mat');
+	load('Input Data\2020 data (MATLAB-Ready).mat');
+%% load p
+	p = load_params('Input Data\one-kubo init guess.csv');
 %% gather structure of auxiliary information required for algorithm
 	aux = ILS_initialize_aux(p);
-	save('Output Data\p.mat','p','aux');
-%% generate weight mask
-% weight along pump time axis
-	w_t1 = reshape(ones(size(x.t1)),[x.N1,1,1]); % the reshape function makes this an N1x1x1 vector
-	%w_t1(1:nearest_index(x.t1,0.3)) = 0; % don't fit where pulse overlap occurs
-	w_t1(x.N1) = 0; % don't fit to last point where unapodizing was unstable
-% weight along waiting time axis
-	w_Tw = reshape(ones(size(x.Tw)),[1,1,x.N2]); % the reshape function makes this an 1x1xN2 vector
-	w_Tw(1:26) = 10;
-	w_Tw(27:30) = 20;
-	w_Tw(31) = 40;
-	w_Tw(32:34) = 60;
-	w_Tw(35:36) = 80;
-	w_Tw(1:nearest_index(x.Tw,0.3)) = 0; % don't fit where pulse overlap occurs
-% weight along probe frequency axis
-	w_w3 = reshape(zeros(size(x.w3)),[1,x.N3,1]);  % the reshape function makes this an 1xN3x1 vector
-	w_w3(nearest_index(x.w3,2110):nearest_index(x.w3,2180)) = 1;
-% composite weight
-	w = w_t1.*w_Tw.*w_w3; % the dimensions should end up being N1xN3xN2 if using the reshape functions above
 %% show comparison between initial guess and data for TA spectrum
 	ax = nexttile(initial_fit_layout,1);
 		cla(ax);
 		M_init = ILS_M(x,p);
 		n_Tw = 1;n_t1 = 1;
-		plot(ax,x.w3,w_w3.*real(D(n_t1,:,n_Tw)),'k-',x.w3,w_w3.*real(M_init(n_t1,:,n_Tw)),'r--');
+		plot(ax,x.w3,real(D_FID(n_t1,:,n_Tw)),'k-',x.w3,real(M_init(n_t1,:,n_Tw)),'r--');
 		xlim(ax,w3_plot_lim);
 		xlabel(ax,'Probe Frequency (cm^{-1})');ylabel('\DeltaOD');title(ax,'TA Comparison');
 		legend(ax,'TA from Data','TA from Initial Guess')
 	ax = nexttile(initial_fit_layout,2);
 		cla(ax);
-		plot(ax,x.t1,w_t1.*real(D(:,nearest_index(x.w3,p.w_01.val),1)),'k-',x.t1,w_t1.*real(M_init(:,nearest_index(x.w3,p.w_01.val),1)),'r--');
+		plot(ax,x.t1,w_t1.*real(D_FID(:,nearest_index(x.w3,p.w_01.val),1)),'k-',x.t1,w_t1.*real(M_init(:,nearest_index(x.w3,p.w_01.val),1)),'r--');
 		xlabel(ax,'\tau_1 (ps)');ylabel('\DeltaOD');title(ax,'FID Comparison');
 		legend(ax,'FID from Data','FID from Initial Guess')
 %% iterative fitting:
@@ -89,14 +68,14 @@ close all
 			else
 				p_prev = p_arr(iter-1);
 			end
-			[p_arr(iter),cov,C_arr(iter),SIGN_arr(iter),aux] = ILS_p_min(x,p_prev,D,w,aux);
+			[p_arr(iter),cov,C_arr(iter),SIGN_arr(iter),aux] = ILS_p_min(x,p_prev,D_FID,InvVar_masked.prod,aux);
 		%% check for stall or convergence
 			[aux,break_flag] = ILS_check_stall_conv(aux,C_arr,SIGN_arr,SIGN_lim,iter);
 			if break_flag
 				break
 			end
 		%% update fitting report
-			plot_fit_update(update_fig,p,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,w,1,aux,timerval,w3_plot_lim);
+			plot_fit_update(update_fig,p,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D_FID,x,InvVar_masked.prod,1,aux,timerval,w3_plot_lim);
 		%% update video frames from this iteration
 			if record_fit_update_video
 				savefig(update_fig,[fit_update_dir,sprintf('\\iter%i.fig',iter)]);
@@ -140,7 +119,7 @@ close all
 	save('..\Exp MeSCN DMSO - 2021 Data\Output Data\2020 results.mat','p_arr','p_best_fit_2020','SIGN_arr','C_arr','aux');
 	clear p_arr SIGN_arr C aux
 %% make Tw series of 2D spectra comparison between data and fit
-	[D_spec_apo,x_apo] = FID_to_2Dspec(D,x,4);
+	[D_spec_apo,x_apo] = FID_to_2Dspec(D_FID,x,4);
 	M_fit = ILS_M(x,p_best_fit_2020);
 	[M_spec_apo,x_apo] = FID_to_2Dspec(M_fit,x,4);
 	for i=1:x.N2

@@ -15,10 +15,13 @@ close all;
 		LA_t = tiledlayout(LA_fig,4,2,'TileSpacing','compact','Padding','compact');
 	std_ratio_fig = figure;set(std_ratio_fig,'Position',[700,450,300,200],'Color',[1,1,1]);
 	comp_fig = openfig('composite figure.fig');
-%% linear absorption example
-	load('Input Data\FID.mat');
-	load('Input Data\p.mat');
-	p.A01.val = p.A01.val/6000;
+%% load p
+	p = load_params('Input Data\p.csv');
+%% make axes
+	Tw = [ 0:0.1:1 , 1.2:0.2:2 , 2.5:0.5:5, 6:1:10, 15:5:30, 40:20:100];
+    x = gen_x([0 4],16,2130,[2110 2190],128,Tw,'real');
+%% prepare param struct for linear absorption fitting
+	p.A01.val = p.A01.val*(1.6866e-4);
 	p.('c') = p.A01;
 	p.c.val = 0;
 	p.c.label = 'c';
@@ -64,7 +67,6 @@ close all;
 		LA_fit_val(i,1:5) = coeffvalues(LA_fit);
 		hold(ax2,'on')
 		plot(ax2,x_ticks,LA_fit_val(i,:)./true_vals(:)','b.','MarkerSize',12);
-		ylim(ax2,[0,2]);
 		xlim(ax2,[x_ticks(1)-0.5,x_ticks(numel(x_ticks))+0.5]); xticks(ax2,x_ticks); xticklabels(ax2,x_tick_labels);
 		title(ax2,sprintf('Parameters From %i Trials',i))
 		ylabel(ax2,'Fit / True');
@@ -108,7 +110,6 @@ close all;
 		LA_fit_val(i,1:5) = coeffvalues(LA_fit);
 		hold(ax2,'on')
 		plot(ax2,x_ticks,LA_fit_val(i,:)./true_vals(:)','b.','MarkerSize',12);
-		ylim(ax2,[1-1e-0,1+1e-0]);
 		xlim(ax2,[x_ticks(1)-0.5,x_ticks(numel(x_ticks))+0.5]); xticks(ax2,x_ticks); xticklabels(ax2,x_tick_labels);
 		title(ax2,sprintf('Parameters From %i Trials',i))
 		ylabel(ax2,'Fit / True');
@@ -120,7 +121,7 @@ close all;
 	CLS_var_tau_std = std(LA_fit_val,0,1)./true_vals;
 	ax = findobj('Tag','F');
 	copyobj(CLS_t.Children(3).Children,ax)
-	str = sprintf('%i%% %i%% %i%% %i%% %i%%      -       -',(sum(check,1)));
+	str = sprintf('%i%% %i%% %i%% %i%% %i%% - -',(sum(check,1)));
 	annotation(comp_fig,'textbox',[0.7,0.51,0.3,0.0348],'String',str,'linestyle','none','FontSize',9)
 
 %% run empirical variance trial set for linear absorption
@@ -149,7 +150,6 @@ close all;
 		LA_fit_val(i,:) = coeffvalues(LA_fit);
 		hold(ax2,'on')
 		plot(ax2,x_ticks(:),LA_fit_val(i,:)./true_vals(:)','b.','MarkerSize',12);
-		ylim(ax2,[0,2]);
 		xlim(ax2,[x_ticks(1)-0.5,x_ticks(numel(x_ticks))+0.5]); xticks(ax2,x_ticks); xticklabels(ax2,x_tick_labels);
 		title(ax2,sprintf('Parameters From %i Trials',i))
 		ylabel(ax2,'Fit / True');
@@ -175,11 +175,10 @@ close all;
 	ylim(ax,[1e-2,1e3])
 	xlim(ax,[x_ticks(1)-0.5,x_ticks(numel(x_ticks))+0.5]); xticks(ax,x_ticks); xticklabels(ax,x_tick_labels);
 	ylabel(ax,{'CLS Method / Naive Fit','Error Ratio'});
-	legend(ax,'Fixed CLS \tau','Noisy CLS \tau')
+	legend(ax,'Abs. Certain CLS \tau','Uncertain CLS \tau')
 	
 	ax2 = findobj('Tag','L');
 	copyobj(ax.Children,ax2)
-	legend(ax2,'Fixed CLS \tau','Noisy CLS \tau')
 	
 	savefig(comp_fig,'composite figure.fig')
 	

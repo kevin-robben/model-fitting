@@ -6,12 +6,15 @@ close all;
     addpath('Miscellaneous Functions\');
 %% define bandwidth range for fitting to linear absorption
 	fit_bw_CLS = 19;
-%% linear absorption example
-	load('Input Data\FID.mat');
-	load('Input Data\p.mat');
-	
-	p_struct = p;clear p;
-	p_struct.A01.val = p_struct.A01.val/6000;
+%% load p
+	p = load_params('Input Data\p.csv');
+%% make axes
+	Tw = [ 0:0.1:1 , 1.2:0.2:2 , 2.5:0.5:5, 6:1:10, 15:5:30, 40:20:100];
+    x = gen_x([0 4],16,2130,[2110 2190],128,Tw,'real');
+%% prepare param struct for linear absorption fitting
+	p_struct = p;
+	clear p;
+	p_struct.A01.val = p_struct.A01.val*(1.6866e-4);
 	p_struct.('c') = p_struct.A01;
 	p_struct.c.val = 0;
 	p_struct.c.label = 'c';

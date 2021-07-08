@@ -1,5 +1,9 @@
 clear all
 close all
+%% add paths
+    addpath('ILS Functions\');
+    addpath('Lineshape Functions\');
+    addpath('Miscellaneous Functions\');
 %% set random number generator seed to 1
 	rng('default');
 	rng(1);
@@ -42,24 +46,23 @@ close all
 	w1_plot_lim = [2115,2185];
 	w3_plot_lim = [2115,2185];
 %% define bandwidth range for fitting to linear absorption
-	fit_bw_CLS = 18;
+	fit_bw_CLS = 19;
 %% load p
-	load('Input Data\p.mat');
+	p = load_params('Input Data\p.csv');
 	p_true = p;
-%% load data
-    load('Input Data\FID.mat');
+%% make axes
+	Tw = [ 0:0.1:1 , 1.2:0.2:2 , 2.5:0.5:5, 6:1:10, 15:5:30, 40:20:100];
+    x = gen_x([0 4],16,2130,[2110 2190],128,Tw,'real');
+%% simulate true (noiseless) FID
+	FID = ILS_M(x,p);
 %% set SIGN limit
 	SIGN_lim = 1e-9;
-%% add paths
-    addpath('ILS Functions\');
-    addpath('Lineshape Functions\');
-    addpath('Miscellaneous Functions\');
 %% initialize figures
-	initial_fit_fig = openfig('Initial_fit_template.fig');
-	C_SIGN_fig = openfig('C_and_SIGN_template.fig');
+	initial_fit_fig = openfig('Templates\Initial_fit_template.fig');
+	C_SIGN_fig = openfig('Templates\C_and_SIGN_template.fig');
+	CLS_fig = openfig('Templates\CLS_template.fig');
+	trial_params_fig = openfig('Templates\Params_template.fig');
 	update_fig = figure;set(update_fig,'Position',[20 50 1500 700]);
-	CLS_fig = openfig('CLS_template.fig');
-	trial_params_fig = openfig('Params_template.fig');
 	pause_stop_fit_fig = uifigure('HandleVisibility','on');
 		set(pause_stop_fit_fig,'Position',[500 300 250 50]);
 		pause_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Pause Fitting','Value',0,'Position',[20,10, 100, 22]);
@@ -158,7 +161,7 @@ for trial=1:100
 			end
 		end
 	%% determine best fit
-		[M,i] = min(SIGN_arr);
+		[M,i] = min(C_arr);
 		p_best_fit = p_arr(i);
 	%% organize parameters (and CIs) from model fitting such that smaller kubo time constant is always first
         model_fit_val = [ p_best_fit.kubo1_D2.val, p_best_fit.kubo2_D2.val, p_best_fit.kubo1_t.val, p_best_fit.kubo2_t.val, p_best_fit.T_hom_inv.val];
@@ -196,13 +199,13 @@ for trial=1:100
 			savefig(CLS_fig,[CLS_dir,sprintf('\\trial%i.fig',trial)]);
 		end
 	%% fit linear absorption spectrum to obtain kubo amplitude constants 
-        load('Input Data\Probe abs.mat');
+        probe_abs = M_1st_order_kubo(x,p_true);
 		w3_fit_range = [p_true.w_01.val-fit_bw_CLS/2,p_true.w_01.val+fit_bw_CLS/2]; % upper 80% of linear absorption
         [n3_min,n3_max] = nearest_index(x.w3,w3_fit_range);
 		probe_abs = probe_abs/max(probe_abs);
         fit_type = fittype(@(A,c,kubo1_D2,kubo2_D2,T_hom_inv,w3) Lin_Abs(x,p_true,A,c,[CLS_fit_val(3),CLS_fit_val(4)],[kubo1_D2,kubo2_D2],T_hom_inv,[n3_min,n3_max],w3),'independent','w3');
 		fit_options = fitoptions(fit_type);
-		init_values = [1.6e-08,1e-3,33.64,6.76,0.2857].*(1+0.1*randn(1,5));
+		init_values = [1.6e-08,1e-3,33.64,6.76,0.3297].*(1+0.1*randn(1,5));
 		fit_options = fitoptions(fit_options,'Algorithm','Levenberg-Marquardt','TolX',1e-20,'TolFun',1e-20,'StartPoint',init_values);
         [LA_fit,gof,output] = fit(x.w3(n3_min:n3_max)',probe_abs(n3_min:n3_max)',fit_type,fit_options);
 	%% analyze and organize parameters from CLS fitting
@@ -275,7 +278,8 @@ for trial=1:100
 		savefig(trial_params_fig,'Output Data\Trial Params.fig');
 		save('Output Data\100 trial results.mat','CLS_fit_val_arr','model_fit_val_arr','CLS_fit_CI_arr','model_fit_CI_arr');
 	%% save p_arr, p_best_fit, SIGN_arr and C_arr, then clear from memory
-		save('Output Data\results.mat','p_arr','p_best_fit','SIGN_arr','C_arr','aux');
+		save('Output Data\results.mat','p_arr','SIGN_arr','C_arr','aux');
+		save_params(p_best_fit,'Output Data\p best fit.csv');
 		clear p_arr SIGN_arr C_arr aux
 	%% clear variables
 		clear C_arr SIGN_arr p_arr model_fit_val model_fit_CI CLS_fit_val CLS_fit_CI CLS_fit LA_fit

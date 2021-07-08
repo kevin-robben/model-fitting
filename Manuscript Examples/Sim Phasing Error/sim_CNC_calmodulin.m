@@ -9,7 +9,7 @@ close all;
 	p.('A01')				= struct('val',1e-4,	'var',1,	'bounds1',5e-5,	'bounds2',2e-4,	'units','arb. unit','label','A_{01}',		'SD',0, 'CI',0);
 	p.('A12')				= struct('val',1e-4,	'var',1,	'bounds1',5e-5,	'bounds2',2e-4,	'units','arb. unit','label','A_{12}',		'SD',0, 'CI',0);
 	p.('w_01')				= struct('val',2080,	'var',1,	'bounds1',2078,	'bounds2',2082,	'units','cm^{-1}',	'label','\omega_{01}',	'SD',0, 'CI',0);
-	p.('cal_err')			= struct('val',0,		'var',1,	'bounds1',-1,	'bounds2',1,	'units','cm^{-1}',	'label','\delta\omega_1','SD',0, 'CI',0);
+	p.('cal_err')			= struct('val',0,		'var',1,	'bounds1',-2,	'bounds2',2,	'units','cm^{-1}',	'label','\delta\omega_1','SD',0, 'CI',0);
 	p.('Anh')				= struct('val',25,		'var',1,	'bounds1',23,	'bounds2',27,	'units','cm^{-1}',	'label','\Delta_{Anh}',	'SD',0, 'CI',0);
 	p.('kubo_anh_fctr')		= struct('val',1,		'var',1,	'bounds1',0.5,	'bounds2',1.5,	'units','unitless',	'label','\beta',		'SD',0, 'CI',0);
 	p.('T_LT_inv')			= struct('val',0.0333,	'var',1,	'bounds1',0.01,	'bounds2',0.1,	'units','ps^{-1}',	'label','T_{LT}^{-1}',	'SD',0, 'CI',0);

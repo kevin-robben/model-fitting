@@ -1,8 +1,5 @@
 clear all
 close all
-%% load data
-	sim_MeSCN_DMSO_2021;
-	load('Input Data\FID.mat');
 %% add paths
     addpath('ILS Functions\');
     addpath('Lineshape Functions\');
@@ -28,7 +25,9 @@ close all
 	update_fig = figure;
 		set(update_fig,'Position',[20 50 1500 700]);
 %% load p
-	load('Input Data\p.mat');
+	p = load_params('Input Data\one-kubo init guess.csv');
+%% load data
+	load('Input Data\2021 data (MATLAB-Ready).mat');
 %% create undersampling masks
 	US_fctr = [1,2,3,5,10,20,40];
 	mask = ones(length(US_fctr),x.N2);
@@ -68,26 +67,26 @@ for k=1:numel(US_fctr)
 		x_US = gen_x([x.w1(1),x.w1(x.N1)],x.N1,[x.w3(1),x.w3(x.N3)],x.N3,x.Tw(logical(mask(k,:))),'complex');
 	%% generate weight mask
     % weight along pump time axis
-        w_t1 = reshape(ones(size(x_US.t1)),[x_US.N1,1,1]);
+        InvVar_masked.pump = reshape(ones(size(x_US.t1)),[x_US.N1,1,1]);
     % weight along waiting time axis
-        w_Tw = reshape(ones(size(x_US.Tw)),[1,1,x_US.N2]);
+        InvVar_masked.Tw = reshape(ones(size(x_US.Tw)),[1,1,x_US.N2]);
     % weight along probe frequency axis
-		w_w3 = reshape(zeros(size(x_US.w3)),[1,x_US.N3,1]);
-		w_w3(nearest_index(x_US.w3,2110):nearest_index(x_US.w3,2180)) = 1;
+		InvVar_masked.probe = reshape(zeros(size(x_US.w3)),[1,x_US.N3,1]);
+		InvVar_masked.probe(nearest_index(x_US.w3,2110):nearest_index(x_US.w3,2180)) = 1;
     % composite weight
-        w = w_t1.*w_Tw.*w_w3;
+        InvVar_masked.prod = (InvVar_masked.pump).*(InvVar_masked.Tw).*(InvVar_masked.probe);
 	%% show comparison between initial guess and data for TA spectrum
 		ax = nexttile(initial_fit_layout,1);
 			cla(ax);
 			M_init = ILS_M(x,p);
 			n_Tw = 1;n_t1 = 1;
-			plot(ax,x.w3,w_w3.*real(D(n_t1,:,n_Tw)),'k-',x.w3,w_w3.*real(M_init(n_t1,:,n_Tw)),'r--');
+			plot(ax,x.w3,real(D_FID(n_t1,:,n_Tw)),'k-',x.w3,real(M_init(n_t1,:,n_Tw)),'r--');
 			xlim(ax,w3_plot_lim);
 			xlabel(ax,'Probe Frequency (cm^{-1})');ylabel('\DeltaOD');title(ax,'TA Comparison');
 			legend(ax,'TA from Data','TA from Initial Guess')
 		ax = nexttile(initial_fit_layout,2);
 			cla(ax);
-			plot(ax,x.t1,w_t1.*real(D(:,nearest_index(x.w3,p.w_01.val),1)),'k-',x.t1,w_t1.*real(M_init(:,nearest_index(x.w3,p.w_01.val),1)),'r--');
+			plot(ax,x.t1,real(D_FID(:,nearest_index(x.w3,p.w_01.val),1)),'k-',x.t1,real(M_init(:,nearest_index(x.w3,p.w_01.val),1)),'r--');
 			xlabel(ax,'\tau_1 (ps)');ylabel('\DeltaOD');title(ax,'FID Comparison');
 			legend(ax,'FID from Data','FID from Initial Guess')
 	%% iterative fitting:
@@ -99,14 +98,14 @@ for k=1:numel(US_fctr)
 				else
 					p_prev = p_arr(iter-1);
 				end
-				[p_arr(iter),cov,C_arr(iter),SIGN_arr(iter),aux] = ILS_p_min(x_US,p_prev,D(:,:,logical(mask(k,:))),w,aux);
+				[p_arr(iter),cov,C_arr(iter),SIGN_arr(iter),aux] = ILS_p_min(x_US,p_prev,D_FID(:,:,logical(mask(k,:))),InvVar_masked.prod,aux);
 			%% check for stall or convergence
 				[aux,break_flag] = ILS_check_stall_conv(aux,C_arr,SIGN_arr,SIGN_lim,iter);
 				if break_flag
 					break
 				end
 			%% update fitting report
-				plot_fit_update(update_fig,p,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D(:,:,logical(mask(k,:))),x_US,w,k,aux,timerval,w3_plot_lim);
+				plot_fit_update(update_fig,p,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D_FID(:,:,logical(mask(k,:))),x_US,InvVar_masked.prod,k,aux,timerval,w3_plot_lim);
 			%% update video frames from this iteration
 				frame = frame+1;
 				F_update_fig(frame) = getframe(update_fig);
@@ -163,7 +162,7 @@ for k=1:numel(US_fctr)
 		clear p_arr SIGN_arr C_arr aux
 end
 %% make Tw series of 2D IR comparison between data and fit
-	[D_spec_apo,x_apo] = FID_to_2Dspec(D,x,4);
+	[D_spec_apo,x_apo] = FID_to_2Dspec(D_FID,x,4);
 	M_fit = ILS_M(x,p_best_fit(1));
 	[M_spec_apo,x_apo] = FID_to_2Dspec(M_fit,x,4);
 	for i=1:x.N2

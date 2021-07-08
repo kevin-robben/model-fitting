@@ -8,9 +8,10 @@ close all
 	load('Output Data\2020 results.mat');
 	load('Output Data\CLS Analysis (2020 Data).mat');
 	aux_2020 = aux;
-	load('Input Data\FID.mat');
-	load('Output Data\p.mat');
+	load('Input Data\2021 data (MATLAB-Ready).mat');
 	load('Output Data\Undersampling.mat');
+%% load p
+	p = load_params('Input Data\one-kubo init guess.csv');
 %% load chosen fits into p_best_fit
 	load('Output Data\p_best_fit.mat');
 %% set plot limits
@@ -158,7 +159,7 @@ close all
 	p_fit.w_01.val = p_fit.w_01.val-0.6;
 %% compar CLS between model and experimental data
 	%% measure CLS of experimental data
-		[D_spec_apo,x_apo] = FID_to_2Dspec(D,x,4);
+		[D_spec_apo,x_apo] = FID_to_2Dspec(D_FID,x,4);
 		for i=1:x.N2
 			[CL_w3, w1_axis, CLS] = trace_CL(x_apo.w1,[2153.7-2.5,2153.7+2.5],x_apo.w3,[2153.5-6,2153.5+6],D_spec_apo(:,:,i),'Asymmetric Lorentzian');
 			CLS_arr_01(i) = CLS;

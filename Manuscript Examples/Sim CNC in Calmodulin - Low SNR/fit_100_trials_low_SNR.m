@@ -1,5 +1,9 @@
 clear all
 close all
+%% add paths
+    addpath('ILS Functions\');
+    addpath('Lineshape Functions\');
+    addpath('Miscellaneous Functions\');
 %% set random number generator seed to 1
 	rng('default');
 	rng(1);
@@ -29,41 +33,30 @@ close all
 %% set plot limits
 	w1_plot_lim = [2020,2120];
 	w3_plot_lim = [2020,2120];
-%% define bandwidth range for fitting to linear absorption
-	fit_bw_CLS = 24.5;
 %% load p
-	load('Input Data\p.mat');
+	p = load_params('Input Data\p.csv');
 	p_true = p;
-%% load data
-    load('Input Data\FID.mat');
+%% make axes
+	Tw = [ 0.4:0.2:2 , 2.5:0.5:5 , 6:1:10 , 12:2:20, 25:5:40, 50:10:100 ];
+    x = gen_x([0,4],32,2010,[2020,2120],128,Tw,'real');
+%% simulate true (noiseless) FID
+	FID = ILS_M(x,p);
 %% set SIGN limit
 	SIGN_lim = 1e-9;
-%% add paths
-    addpath('ILS Functions\');
-    addpath('Lineshape Functions\');
-    addpath('Miscellaneous Functions\');
 %% initialize figures
-	initial_fit_fig = figure;
-		set(initial_fit_fig,'Position',[300 200 600 300]);
-		initial_fit_layout = tiledlayout(initial_fit_fig,1,2,'Padding','compact','TileSpacing','compact');
-	pause_stop_fit_fig = uifigure('HandleVisibility','on');
-		set(pause_stop_fit_fig,'Position',[500 300 250 50]);
-		pause_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Pause Fitting','Value',0,'Position',[20,10, 100, 22]);
-		stop_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Stop Fitting','Value',0,'Position',[130,10, 100, 22]);
-	C_SIGN_fig = figure;
-		set(C_SIGN_fig,'Position',[50 50 300 500]);
-		C_SIGN_layout = tiledlayout(C_SIGN_fig,2,1,'Padding','compact');
-		annotation(C_SIGN_fig,'textbox',[0.01 0.95 0.05 0.03],'String','(A)','LineStyle','none','FitBoxToText','off');
-		annotation(C_SIGN_fig,'textbox',[0.01 0.46 0.05 0.03],'String','(B)','LineStyle','none','FitBoxToText','off');
-	update_fig = figure;
-		set(update_fig,'Position',[20 50 1500 700]);
-	trial_params_fig = openfig('template figure.fig');
+	initial_fit_fig = openfig('Templates\Initial_fit_template.fig');
+	C_SIGN_fig = openfig('Templates\C_and_SIGN_template.fig');
+	trial_params_fig = openfig('Templates\template figure.fig');
 		ax1 = trial_params_fig.Children(1);
 		ax2 = trial_params_fig.Children(2);
 		ax3 = trial_params_fig.Children(3);
 		ax4 = trial_params_fig.Children(4);
 		ax5 = trial_params_fig.Children(5);
-		
+	update_fig = figure;set(update_fig,'Position',[20 50 1500 700]);
+	pause_stop_fit_fig = uifigure('HandleVisibility','on');
+		set(pause_stop_fit_fig,'Position',[500 300 250 50]);
+		pause_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Pause Fitting','Value',0,'Position',[20,10, 100, 22]);
+		stop_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Stop Fitting','Value',0,'Position',[130,10, 100, 22]);
 %% for loop over different trials of noise and random starting points
 for trial=1:100
 	%% add noise
@@ -247,7 +240,8 @@ for trial=1:100
 		savefig(trial_params_fig,'Output Data\Trial Params.fig');
 		save('Output Data\100 trial results.mat','model_fit_val_arr');
 	%% save p_arr, p_best_fit, SIGN_arr and C_arr, then clear from memory
-		save('Output Data\results.mat','p_arr','p_best_fit','SIGN_arr','C_arr','aux');
+		save('Output Data\results.mat','p_arr','SIGN_arr','C_arr','aux');
+		save_params(p_best_fit,'Output Data\p best fit.csv');
 		clear p_arr SIGN_arr C_arr aux
 	%% clear variables
 		clear C_arr SIGN_arr p_arr model_fit_val model_fit_CI

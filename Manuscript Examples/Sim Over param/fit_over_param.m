@@ -1,5 +1,9 @@
 clear all
 close all
+%% add paths
+    addpath('ILS Functions\');
+    addpath('Lineshape Functions\');
+    addpath('Miscellaneous Functions\');
 %% set random number generator seed to 1
 	rng('default');
 	rng(1);
@@ -20,32 +24,24 @@ close all
 %% set plot limits
 	w1_plot_lim = [2115,2185];
 	w3_plot_lim = [2115,2185];
-%% add paths
-    addpath('ILS Functions\');
-    addpath('Lineshape Functions\');
-    addpath('Miscellaneous Functions\');
 %% load p
-    load('Input Data\p.mat');
-    p_true = p;
-%% load data
-    load('Input Data\FID.mat');
+    p = load_params('Input Data\p.csv');
+	p_true = p;
+%% make axes
+	Tw = [ 0:0.1:1 , 1.2:0.2:2 , 2.5:0.5:5, 6:1:10, 15:5:30, 40:20:100];
+    x = gen_x([0 4],16,2130,[2110 2190],128,Tw,'real');
+%% simulate true (noiseless) FID
+	FID = ILS_M(x,p);
 %% set SIGN limit
 	SIGN_lim = 1e-9;
 %% initialize figures
-	initial_fit_fig = figure;
-		set(initial_fit_fig,'Position',[300 200 600 250]);
-		initial_fit_layout = tiledlayout(initial_fit_fig,1,2,'Padding','compact','TileSpacing','compact');
+	initial_fit_fig = openfig('Templates\Initial_fit_template.fig');
+	C_SIGN_fig = openfig('Templates\C_and_SIGN_template.fig');
+	update_fig = figure;set(update_fig,'Position',[20 50 1500 700]);
 	pause_stop_fit_fig = uifigure('HandleVisibility','on');
 		set(pause_stop_fit_fig,'Position',[500 300 250 50]);
 		pause_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Pause Fitting','Value',0,'Position',[20,10, 100, 22]);
 		stop_fit_btn = uibutton(pause_stop_fit_fig,'state','Text','Stop Fitting','Value',0,'Position',[130,10, 100, 22]);
-	C_SIGN_fig = figure;
-		set(C_SIGN_fig,'Position',[50 50 300 500]);
-		C_SIGN_layout = tiledlayout(C_SIGN_fig,2,1,'Padding','compact');
-        annotation(C_SIGN_fig,'textbox',[0.01 0.95 0.05 0.03],'String','(A)','LineStyle','none','FitBoxToText','off');
-		annotation(C_SIGN_fig,'textbox',[0.01 0.46 0.05 0.03],'String','(B)','LineStyle','none','FitBoxToText','off');
-	update_fig = figure;
-		set(update_fig,'Position',[20 50 1500 700]);
 %% for loop over different trials of noise and random starting points
 for trial=1:20
 	%% add noise
@@ -167,9 +163,10 @@ for trial=1:20
         end
     %% determine best fit
 		[M,i] = min(C_arr);
-		p_best_fit(trial) = p_arr(i);
+		p_best_fit = p_arr(i);
 	%% save p_arr, p_best_fit, SIGN_arr and C_arr, then clear from memory
-		save('Output Data\results.mat','p_arr','p_best_fit','SIGN_arr','C_arr','aux');
+		save('Output Data\results.mat','p_arr','SIGN_arr','C_arr','aux');
+		save_params(p_best_fit,'Output Data\p best fit.csv');
 		clear p_arr SIGN_arr C_arr aux
 	%% check for stop fitting
 		if stop_fit_btn.Value == 1
