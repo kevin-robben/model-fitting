@@ -61,16 +61,16 @@ close all
 for trial=1:100
 	%% add noise
 		noise = (1e-3)/10*randn(size(FID));
-		D = FID + noise;
+		D_FID = FID + noise;
 	%% generate weight mask
 		% weight along pump time axis
-			w_t1 = reshape(ones(size(x.t1)),[x.N1,1,1]);
+			InvVar_masked.pump = reshape(ones(size(x.t1)),[x.N1,1,1]);
 		% weight along waiting time axis
-			w_Tw = reshape(ones(size(x.Tw)),[1,1,x.N2]);
+			InvVar_masked.Tw = reshape(ones(size(x.Tw)),[1,1,x.N2]);
 		% weight along probe frequency axis
-			w_w3 = reshape(ones(size(x.w3)),[1,x.N3,1]);
+			InvVar_masked.probe = reshape(ones(size(x.w3)),[1,x.N3,1]);
 		% composite weight
-			w = w_t1.*w_Tw.*w_w3;
+			InvVar_masked.prod = (InvVar_masked.pump).*(InvVar_masked.Tw).*(InvVar_masked.probe);
 	%% gather structure of auxiliary fitting information required for algorithm
 		aux = ILS_initialize_aux(p);
 	%% define initial (guess) model parameters as a random vector in boundary space
@@ -78,11 +78,11 @@ for trial=1:100
 	%% show comparison between initial guess and data for TA spectrum
 		ax = findobj(initial_fit_fig,'Tag','TA');
 			M_init = ILS_M(x,p);
-			plot(ax,x.w3,real(D(1,:,1)),'k-',x.w3,real(M_init(1,:,1)),'r--');
+			plot(ax,x.w3,real(D_FID(1,:,1)),'k-',x.w3,real(M_init(1,:,1)),'r--');
 			xlim(ax,w3_plot_lim);
 			legend(ax,'TA from Data','TA from Initial Guess')
 		ax = findobj(initial_fit_fig,'Tag','FID');
-			plot(ax,x.t1,w_t1.*real(D(:,nearest_index(x.w3,p.w_01.val),1)),'k-',x.t1,w_t1.*real(M_init(:,nearest_index(x.w3,p.w_01.val),1)),'r--');
+			plot(ax,x.t1,real(D_FID(:,nearest_index(x.w3,p.w_01.val),1)),'k-',x.t1,real(M_init(:,nearest_index(x.w3,p.w_01.val),1)),'r--');
 			legend(ax,'FID from Data','FID from Initial Guess')
 	%% iterative fitting:
 		timerval = tic;
@@ -93,11 +93,11 @@ for trial=1:100
 			else
 				p_prev = p_arr(iter-1);
 			end
-			[p_arr(iter),cov,C_arr(iter),SIGN_arr(iter),aux] = ILS_p_min(x,p_prev,D,w,aux);
+			[p_arr(iter),cov,C_arr(iter),SIGN_arr(iter),aux] = ILS_p_min(x,p_prev,D_FID,InvVar_masked.prod,aux);
 		%% check for stall or convergence
 			[aux,break_flag] = ILS_check_stall_conv(aux,C_arr,SIGN_arr,SIGN_lim,iter);
 		%% update fitting report
-			plot_fit_update(update_fig,p,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,w,trial,aux,timerval,w3_plot_lim);
+			plot_fit_update(update_fig,p,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D_FID,x,InvVar_masked.prod,trial,aux,timerval,w3_plot_lim);
 			%% add reticles to fitting report to symbolize true values
 				%% frequency reticle
 					ax = update_fig.Children.Children(3);
@@ -213,11 +213,11 @@ for trial=1:100
 			ylabel(ax,'\langleFit\rangle / True ');title(ax,['Average Parameters',newline,sprintf('Over %i Trials',trial)]);
 		end
 	%% add pump-probe and 2D IR
-		[spec,x_apo] = FID_to_2Dspec(D,x,4);
+		[spec,x_apo] = FID_to_2Dspec(D_FID,x,4);
 		plot_2Dspec(ax4,x_apo,w1_plot_lim,w3_plot_lim,spec(:,:,1),'2D IR Spectrum at T_W = 0')
 		ax4.DataAspectRatioMode = 'auto';
 		M = ILS_M(x,p_best_fit);
-		plot(ax5,x.w3,D(1,:,1),'k-',x.w3,M(1,:,1),'r-')
+		plot(ax5,x.w3,D_FID(1,:,1),'k-',x.w3,M(1,:,1),'r-')
 		title(ax5,'Transient Absorption at T_W = 0');
 		xlabel(ax5,'Probe (cm^{-1})');ylabel(ax5,'\DeltaOD');
 		xlim(ax5,w1_plot_lim);

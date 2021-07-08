@@ -48,16 +48,16 @@ close all
 for trial=1:100
 	%% add noise
 		noise = (1e-5)*randn(size(FID));
-		D = FID + noise;
+		D_FID = FID + noise;
 	%% generate weight mask
 		% weight along pump time axis
-			w_t1 = reshape(ones(size(x.t1)),[x.N1,1,1]);
+			InvVar_masked.pump = reshape(ones(size(x.t1)),[x.N1,1,1]);
 		% weight along waiting time axis
-			w_Tw = reshape(ones(size(x.Tw)),[1,1,x.N2]);
+			InvVar_masked.Tw = reshape(ones(size(x.Tw)),[1,1,x.N2]);
 		% weight along probe frequency axis
-			w_w3 = reshape(ones(size(x.w3)),[1,x.N3,1]);
+			InvVar_masked.probe = reshape(ones(size(x.w3)),[1,x.N3,1]);
 		% composite weight
-			w = w_t1.*w_Tw.*w_w3;
+			InvVar_masked.prod = (InvVar_masked.pump).*(InvVar_masked.Tw).*(InvVar_masked.probe);
 	%% gather structure of auxiliary fitting information required for algorithm
 		aux = ILS_initialize_aux(p_model);
 	%% define initial (guess) model parameters as a random vector in boundary space
@@ -65,11 +65,11 @@ for trial=1:100
 	%% show comparison between initial guess and data for TA spectrum
 		ax = findobj(initial_fit_fig,'Tag','TA');
 			M_init = ILS_M(x,p_init);
-			plot(ax,x.w3,w_w3.*real(D(1,:,1)),'k-',x.w3,w_w3.*real(M_init(1,:,1)),'r--');
+			plot(ax,x.w3,real(D_FID(1,:,1)),'k-',x.w3,real(M_init(1,:,1)),'r--');
 			xlim(ax,[2110,2190]);
 			legend(ax,'TA from Data','TA from Initial Guess')
 		ax = findobj(initial_fit_fig,'Tag','FID');
-			plot(ax,x.t1,w_t1.*real(D(:,nearest_index(x.w3,p_init.w_01.val),1)),'k-',x.t1,w_t1.*real(M_init(:,nearest_index(x.w3,p_init.w_01.val),1)),'r--');
+			plot(ax,x.t1,real(D_FID(:,nearest_index(x.w3,p_init.w_01.val),1)),'k-',x.t1,real(M_init(:,nearest_index(x.w3,p_init.w_01.val),1)),'r--');
 			legend(ax,'FID from Data','FID from Initial Guess')
 	%% iterative fitting:
 		timerval = tic;
@@ -80,11 +80,11 @@ for trial=1:100
 			else
 				p_prev = p_arr(iter-1);
 			end
-			[p_arr(iter),cov,C_arr(iter),SIGN_arr(iter),aux] = ILS_p_min(x,p_prev,D,w,aux);
+			[p_arr(iter),cov,C_arr(iter),SIGN_arr(iter),aux] = ILS_p_min(x,p_prev,D_FID,InvVar_masked.prod,aux);
 		%% check for stall or convergence
 			[aux,break_flag] = ILS_check_stall_conv(aux,C_arr,SIGN_arr,SIGN_lim,iter);
 		%% update fitting report
-			plot_fit_update(update_fig,p_init,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,w,trial,aux,timerval,w3_plot_lim);
+			plot_fit_update(update_fig,p_init,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D_FID,x,InvVar_masked.prod,trial,aux,timerval,w3_plot_lim);
 			%% add reticles to fitting report to symbolize true values
 				%% frequency reticle
 					ax = findobj(update_fig,'Tag','freq_ax');

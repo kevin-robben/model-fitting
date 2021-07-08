@@ -41,7 +41,7 @@ function plot_fit_update(fig,p_init,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,w,tri
 		set(ax,'YMinorTick','on','YScale','log');
 		ylim(ax,[0.9*min(C_arr(1:iter)),1.1*max(C_arr(1:iter))]);
 		xtickformat(ax,'%.2g');ytickformat(ax,'%.2g')
-		ylabel(ax,'C');xlabel(ax,'Iteration');title(ax,'Cost Function');
+		ylabel(ax,'C(\bfp\rm)');xlabel(ax,'Iteration');title(ax,'Cost Function');
     %% plot the scale invariant gradient norm (SIGN)
         ax = SIGN_ax;
 		ax.Box = 'on';

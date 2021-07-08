@@ -119,6 +119,14 @@ close all
 		writeVideo(writerObj,F(i));
 	end
 	close(writerObj);
+%% make comparison plots and save
+	i = nearest_index(x.Tw,0.4);
+	fig = compare_2Dspec(x_apo,w1_plot_lim,w3_plot_lim,x_apo.Tw(i),D_spec_apo,M_spec_apo,'2020 Data');
+	savefig(fig,[output_dir,'comparison plot at 400 fs.fig']);
+%% make comparison plots and save
+	i = nearest_index(x.Tw,50);
+	fig = compare_2Dspec(x_apo,w1_plot_lim,w3_plot_lim,x_apo.Tw(i),D_spec_apo,M_spec_apo,'2020 Data');
+	savefig(fig,[output_dir,'comparison plot at 50 ps.fig']);
 %% remove paths
     rmpath('ILS Functions\');
     rmpath('Lineshape Functions\');
