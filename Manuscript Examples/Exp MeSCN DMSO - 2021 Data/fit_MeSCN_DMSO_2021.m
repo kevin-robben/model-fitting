@@ -145,23 +145,6 @@ for k=1:numel(US_fctr)
 		save(strcat('Output Data\results Num_sample_',num2str(sum(mask(k,:))),'.mat'),'p_arr','SIGN_arr','C_arr','aux');
 		clear p_arr SIGN_arr C_arr aux
 end
-%% make Tw series of 2D IR comparison between data and fit
-	[D_spec_apo,x_apo] = FID_to_2Dspec(D_FID,x,4);
-	M_fit = ILS_M(x,p_best_fit(1));
-	[M_spec_apo,x_apo] = FID_to_2Dspec(M_fit,x,4);
-	for i=1:x.N2
-		fig = compare_2Dspec(x_apo,w1_plot_lim,w3_plot_lim,x_apo.Tw(i),D_spec_apo,M_spec_apo,'2021 Data');
-		F(i) = getframe(fig);
-		close(fig);
-	end
-	writerObj = VideoWriter('Output Data\2021 Data Fit Residual Video.mp4','MPEG-4');
-	writerObj.FrameRate = 2;
-	writerObj.Quality = 100;
-	open(writerObj);
-	for i=1:length(F)
-		writeVideo(writerObj,F(i));
-	end
-	close(writerObj);
 %% save fitting to video
 	for i=1:numel(US_fctr)
 		writerObj = VideoWriter(sprintf('Output Data\\Fitting Video N_%i.mp4',US_fctr(i)),'MPEG-4');
@@ -177,6 +160,3 @@ end
     rmpath('ILS Functions\');
     rmpath('Lineshape Functions\');
     rmpath('Miscellaneous Functions\');
-%% run fitting analysis
-	fitting_analysis_2021
-	

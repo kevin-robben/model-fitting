@@ -74,14 +74,15 @@ close all
 		stop_fit_btn.Value = 0;
 	end
 %% update cost function and SIGN plot
-	ax = findobj(initial_fit_fig,'Tag','TA');
-		set(ax,'YMinorTick','on','YScale','log','Box','on');
+	ax = findobj(C_SIGN_fig,'Tag','A');
+		C_line = plot(ax,C_arr);
 		max_iter = numel(C_line.XData);
-		xlim([1,max_iter]);
-	ax = findobj(initial_fit_fig,'Tag','FID');lines = plot(ax,SIGN_arr,'Color',C_line.Color);
+		xlim(ax,[1,max_iter]);
+	ax = findobj(C_SIGN_fig,'Tag','B');
 		plot(ax,ones(1,500)*SIGN_lim,'--','Color',[0.5,0.5,0.5]);
+		lines = plot(ax,SIGN_arr);
 		set(ax,'YMinorTick','on','YScale','log');
-		xlim([1,max_iter]);
+		xlim(ax,[1,max_iter]);
 		savefig(C_SIGN_fig,[output_dir,'\C and SIGN.fig']);
 %% determine best fit
 	[M,i] = min(C_arr);

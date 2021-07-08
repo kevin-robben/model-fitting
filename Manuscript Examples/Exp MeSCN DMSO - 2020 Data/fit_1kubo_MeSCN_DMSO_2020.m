@@ -38,14 +38,12 @@ close all
 %% gather structure of auxiliary information required for algorithm
 	aux = ILS_initialize_aux(p);
 %% show comparison between initial guess and data for TA spectrum
-	ax = nexttile(initial_fit_layout,1);
-		cla(ax);
+	ax = findobj(initial_fit_fig,'Tag','TA');
 		M_init = ILS_M(x,p);
 		plot(ax,x.w3,real(D_FID(1,:,1)),'k-',x.w3,real(M_init(1,:,1)),'r--');
 		xlim(ax,w3_plot_lim);
 		legend(ax,'TA from Data','TA from Initial Guess')
-	ax = nexttile(initial_fit_layout,2);
-		cla(ax);
+	ax = findobj(initial_fit_fig,'Tag','FID');
 		plot(ax,x.t1,real(D_FID(:,nearest_index(x.w3,p.w_01.val),1)),'k-',x.t1,real(M_init(:,nearest_index(x.w3,p.w_01.val),1)),'r--');
 		legend(ax,'FID from Data','FID from Initial Guess')
 %% iterative fitting:
@@ -85,14 +83,15 @@ close all
 		stop_fit_btn.Value = 0;
 	end
 %% update cost function and SIGN plot
-	ax = findobj(initial_fit_fig,'Tag','TA');
-		set(ax,'YMinorTick','on','YScale','log','Box','on');
+	ax = findobj(C_SIGN_fig,'Tag','A');
+		C_line = plot(ax,C_arr);
 		max_iter = numel(C_line.XData);
-		xlim([1,max_iter]);
-	ax = findobj(initial_fit_fig,'Tag','FID');lines = plot(ax,SIGN_arr,'Color',C_line.Color);
+		xlim(ax,[1,max_iter]);
+	ax = findobj(C_SIGN_fig,'Tag','B');
 		plot(ax,ones(1,500)*SIGN_lim,'--','Color',[0.5,0.5,0.5]);
+		lines = plot(ax,SIGN_arr);
 		set(ax,'YMinorTick','on','YScale','log');
-		xlim([1,max_iter]);
+		xlim(ax,[1,max_iter]);
 		savefig(C_SIGN_fig,[output_dir,'\C and SIGN.fig']);
 %% determine best fit
 	[M,i] = min(C_arr);
@@ -106,27 +105,14 @@ close all
 	[D_spec_apo,x_apo] = FID_to_2Dspec(D_FID,x,4);
 	M_fit = ILS_M(x,p_best_fit_2020);
 	[M_spec_apo,x_apo] = FID_to_2Dspec(M_fit,x,4);
-	for i=1:x.N2
-        fig = compare_2Dspec(x_apo,w1_plot_lim,w3_plot_lim,x_apo.Tw(i),D_spec_apo,M_spec_apo,'2020 Data');
-		F(i) = getframe(fig);
-        close(fig);
-	end
-	writerObj = VideoWriter('Output Data\Data Fit Residual Video (DMSO 2020 Data).mp4','MPEG-4');
-	writerObj.FrameRate = 2;
-	writerObj.Quality = 100;
-	open(writerObj);
-	for i=1:length(F)
-		writeVideo(writerObj,F(i));
-	end
-	close(writerObj);
 %% make comparison plots and save
 	i = nearest_index(x.Tw,0.4);
 	fig = compare_2Dspec(x_apo,w1_plot_lim,w3_plot_lim,x_apo.Tw(i),D_spec_apo,M_spec_apo,'2020 Data');
-	savefig(fig,[output_dir,'comparison plot at 400 fs.fig']);
+	savefig(fig,[output_dir,'\comparison plot at 400 fs.fig']);
 %% make comparison plots and save
 	i = nearest_index(x.Tw,50);
 	fig = compare_2Dspec(x_apo,w1_plot_lim,w3_plot_lim,x_apo.Tw(i),D_spec_apo,M_spec_apo,'2020 Data');
-	savefig(fig,[output_dir,'comparison plot at 50 ps.fig']);
+	savefig(fig,[output_dir,'\comparison plot at 50 ps.fig']);
 %% remove paths
     rmpath('ILS Functions\');
     rmpath('Lineshape Functions\');

@@ -36,7 +36,7 @@ close all
 %% load p
 	p = load_params('Input Data\p.csv');
 	p_true = p;
-	p.phi.var = 0; % comment this line to enable fitting the phase error
+	p.phi.var = 0; % this disables the phase error fitting parameter
 %% make axes
 	Tw = [ 0.4:0.2:2 , 2.5:0.5:5 , 6:1:10 , 12:2:20, 25:5:40, 50:10:100 ];
     x = gen_x([0,4],32,2010,[2020,2120],128,Tw,'real');
@@ -160,11 +160,9 @@ for trial=1:100
 		model_fit_CI = [ p_best_fit.kubo1_D2.CI, p_best_fit.kubo2_D2.CI, p_best_fit.kubo1_t.CI, p_best_fit.T_hom_inv.CI];
         model_fit_val_arr(trial,:) = model_fit_val;
     %% update cost function and SIGN plot
-        ax = nexttile(C_SIGN_layout,1);
-            hold(ax,'on');
+        ax = findobj(C_SIGN_fig,'Tag','A');
             C_line = plot(ax,C_arr);
 			set(ax,'YMinorTick','on','YScale','log','Box','on');
-            ylabel(ax,'C');xlabel(ax,'Iteration');title(ax,'Cost Function');
 			if trial == 1
 				max_iter = numel(C_line.XData);
 			else
@@ -173,16 +171,13 @@ for trial=1:100
 				end
 			end
 			xlim([1,max_iter]);
-		ax = nexttile(C_SIGN_layout,2);
-			ax.Box = 'on';
-            hold(ax,'on');
-            lines = plot(ax,SIGN_arr,'Color',C_line.Color);
+		ax = findobj(C_SIGN_fig,'Tag','B');
+			lines = plot(ax,SIGN_arr,'Color',C_line.Color);
 			if trial == 1
 				plot(ax,ones(1,500)*SIGN_lim,'--','Color',[0.5,0.5,0.5]);
 			end
 			set(ax,'YMinorTick','on','YScale','log');
-            xlabel(ax,'Iteration');ylabel(ax,'$$\widetilde{|\nabla{C}|}$$','Interpreter','LaTeX');title(ax,'Scale Invariant Gradient Norm (SIGN)');
-			xlim([1,max_iter]);
+            xlim([1,max_iter]);
 		if record_C_SIGN_video
 			savefig(C_SIGN_fig,[C_SIGN_dir,sprintf('\\trial%i.fig',trial)]);
 		end
