@@ -169,14 +169,14 @@ for trial=1:100
 					max_iter = numel(C_line.XData);
 				end
 			end
-			xlim([1,max_iter]);
+			xlim(ax,[1,max_iter]);
 		ax = findobj(C_SIGN_fig,'Tag','B');
 			lines = plot(ax,SIGN_arr,'Color',C_line.Color);
 			if trial == 1
 				plot(ax,ones(1,500)*SIGN_lim,'--','Color',[0.5,0.5,0.5]);
 			end
 			set(ax,'YMinorTick','on','YScale','log');
-            xlim([1,max_iter]);
+            xlim(ax,[1,max_iter]);
 		if record_C_SIGN_video
 			savefig(C_SIGN_fig,[C_SIGN_dir,sprintf('\\trial%i.fig',trial)]);
 		end
