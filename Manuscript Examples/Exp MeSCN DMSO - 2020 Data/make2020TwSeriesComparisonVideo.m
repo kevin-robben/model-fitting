@@ -20,7 +20,6 @@ close all
 	for i=1:x.N2
         fig = compare_2Dspec(x_zpd,w1_plot_lim,w3_plot_lim,x_zpd.Tw(i),D_spec,M_spec,'2020 Data');
 		plot(fig.Children(2),w1_axis_2020,CL_w3_arr_01_2020(i,:),'y.','MarkerSize',4);
-		plot(fig.Children(4),w1_axis_2020,CL_w3_arr_01_2020(i,:),'y.','MarkerSize',4);
 		plot(fig.Children(6),w1_axis_2020,CL_w3_arr_01_2020(i,:),'y.','MarkerSize',4);
 		F(i) = getframe(fig);
         close(fig);
