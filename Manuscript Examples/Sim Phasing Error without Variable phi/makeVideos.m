@@ -75,7 +75,9 @@ close all
 		open(writerObj);
 		for i=1:length(d)
             fig = openfig([d(i).folder,'\',d(i).name]);
-			fig.Children(1).YLim = [0.95,1.05];
+			fig.Children(1).YLim = [0.99,1.01];
+			fig.Children(2).YLim = [0.99,1.01];
+			fig.Children(3).YLim = [0.9,1.1];
 			frame = getframe(fig);
             if i == 1
                 default_size = size(frame.cdata);
