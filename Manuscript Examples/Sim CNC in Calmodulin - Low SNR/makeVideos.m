@@ -44,7 +44,7 @@ close all
 	%% write frames to video
 		writerObj = VideoWriter(sprintf('Output Data\\C and SIGN Video.mp4'),'MPEG-4');
 		writerObj.FrameRate = 2;
-		writerObj.Quality = 50;
+		writerObj.Quality = 100;
 		open(writerObj);
 		for i=1:length(d)
             fig = openfig([d(i).folder,'\',d(i).name]);
@@ -71,7 +71,7 @@ close all
 	%% write frames to video
 		writerObj = VideoWriter(sprintf('Output Data\\Params Video.mp4'),'MPEG-4');
 		writerObj.FrameRate = 2;
-		writerObj.Quality = 50;
+		writerObj.Quality = 100;
 		open(writerObj);
 		for i=1:length(d)
             fig = openfig([d(i).folder,'\',d(i).name]);
