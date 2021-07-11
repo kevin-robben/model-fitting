@@ -1,3 +1,0 @@
-variance_compare_1e6_SNR
-variance_compare_1e4_SNR
-variance_compare_1e2_SNR
