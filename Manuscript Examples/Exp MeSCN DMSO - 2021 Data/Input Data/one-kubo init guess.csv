@@ -9,3 +9,4 @@ Row,Field Name,Type,Value,Lower Bound,Upper Bound,Units,Plot Label,Std. Dev.,95%
 8,T_hom_inv,variable,0.4,0.1,2,ps^{-1},T_{Hom}^{-1},0,0
 9,kubo1_t,variable,1,0.1,20,ps,\tau_1,0,0
 10,kubo1_D2,variable,15,0,50,cm^{-2},\Delta_1^2,0,0
+13,phi,constant,0,-15,15,°,\phi,0,0
