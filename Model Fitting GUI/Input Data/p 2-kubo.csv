@@ -11,3 +11,4 @@ Row,Field Name,Type,Value,Lower Bound,Upper Bound,Units,Plot Label,Std. Dev.,95%
 10,kubo1_D2,variable,33.34,0,60,cm^{-2},\Delta_1^2,0.170011263,0.33321627
 11,kubo2_t,variable,1.7,1,50,units,\tau_2,0,0
 12,kubo2_D2,variable,6.76,0.1,60,units,\Delta_2^2,0,0
+13,phi,constant,0,-15,15,°,\phi,0,0
