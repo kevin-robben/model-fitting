@@ -1,4 +1,5 @@
 function [JwJ,dC] = ILS_JwJ_dC(x,p,D,w,aux)
+tic
 %% declare fieldnames struct
 	fn = fieldnames(p);
 %% define differential step
@@ -14,7 +15,7 @@ function [JwJ,dC] = ILS_JwJ_dC(x,p,D,w,aux)
     J = zeros(x.numel,aux.num_var); % initialize Jacobian
 	php = repmat(p,aux.num_var);
 	phm = repmat(p,aux.num_var);
-	for i=1:aux.num_var % for each column of Jacobian...
+	parfor i=1:aux.num_var % for each column of Jacobian...
 		%% determine step size for each parameter (ph = p + h)
 			h = abs(p.(fn{aux.var_indx(i)}).val)*step_fctr;
 			if h < min_param_val
@@ -28,4 +29,5 @@ function [JwJ,dC] = ILS_JwJ_dC(x,p,D,w,aux)
 %% compute gradient of C and JwJ
 	dC = -2*real((r.*w)'*J);
     JwJ = real((J.*w)'*J);
+toc
 end

@@ -1,6 +1,6 @@
 Row,Field Name,Type,Value,Lower Bound,Upper Bound,Units,Plot Label,Std. Dev.,95% C.I.
-1,A01,variable,0.0001,1e-05,0.001,arb. unit,A_{01},0,0
-2,A12,variable,0.0001,1e-05,0.001,arb. unit,A_{12},0,0
+1,A01,variable,0.0001,1.00E-05,0.001,arb. unit,A_{01},0,0
+2,A12,variable,0.0001,1.00E-05,0.001,arb. unit,A_{12},0,0
 3,w_01,variable,2162.4,2161.4,2163.4,cm^{-1},\omega_{01},0,0
 4,cal_err,variable,0,-2,2,cm^{-1},\delta\omega_1,0,0
 5,Anh,variable,27,25,29,cm^{-1},\Delta_{Anh},0,0
@@ -11,4 +11,4 @@ Row,Field Name,Type,Value,Lower Bound,Upper Bound,Units,Plot Label,Std. Dev.,95%
 10,kubo1_D2,variable,33.64,0,50,cm^{-2},\Delta_1^2,0,0
 11,kubo2_t,variable,1.7,0.1,20,ps,\tau_2,0,0
 12,kubo2_D2,variable,6.76,0,50,cm^{-2},\Delta_2^2,0,0
-13,phi,constant,0,-30,30,Â°,\phi,0,0
+13,phi,constant,0,-30,30,°,\phi,0,0
