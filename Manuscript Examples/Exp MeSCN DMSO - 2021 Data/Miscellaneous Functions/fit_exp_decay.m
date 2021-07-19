@@ -66,12 +66,8 @@ function fit_obj = fit_exp_decay(varargin)
 %% check that x and y are column vectors
 	x = varargin{1};
 	y = varargin{2};
-	if size(x,1) == 1
-		x = transpose(x);
-	end
-	if size(y,1) == 1
-		y = transpose(y);
-	end
+    x = reshape(x,[numel(x),1]);
+    y = reshape(y,[numel(y),1]);
 %% fit model
 	[fit_obj,gof,output] = fit(x,y,fit_type,fit_options);
 end

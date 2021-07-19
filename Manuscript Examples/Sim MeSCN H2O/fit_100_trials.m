@@ -190,7 +190,7 @@ for trial=1:100
 		end
 	%% plot CLS
 		ax = findobj(CLS_fig,'Tag','A');
-			plot(ax,x.Tw,CLS_arr,'k.',x.Tw,feval(CLS_fit,x.Tw),'r-');warning('off','MATLAB:Axes:NegativeDataInLogAxis')
+			plot(ax,x.Tw(:),CLS_arr,'k.',x.Tw(:),feval(CLS_fit,x.Tw(:)),'r-');warning('off','MATLAB:Axes:NegativeDataInLogAxis')
 			set(ax,'YMinorTick','on','YScale','log','Box','on','TickLength',[0.02,0]);
 			title(ax,sprintf('CLS From Trial %i',trial))
 			legend(ax,'CLS','CLS fit');

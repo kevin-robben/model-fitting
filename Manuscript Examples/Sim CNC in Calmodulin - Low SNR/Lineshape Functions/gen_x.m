@@ -11,6 +11,7 @@ function x = gen_x(varargin)
             w3_range = varargin{3};
             N3 = varargin{4};
             Tw = varargin{5};
+            N2 = length(Tw);
             num_type = varargin{6};
         %% compute pump axis
             dw1 = (w1_range(2) - w1_range(1))/(N1-1);
@@ -25,6 +26,7 @@ function x = gen_x(varargin)
             w3_range = varargin{4};
             N3 = varargin{5};
             Tw = varargin{6};
+            N2 = length(Tw);
             num_type = varargin{7};
         %% compute pump axis
             if t1_range(1) ~= 0
@@ -50,8 +52,8 @@ function x = gen_x(varargin)
     t3 = (0:1:N3-1)*dt3;
 %% generate 3D time axes and write all axes to the x struct
     x.('t1')        = reshape( t1 , [N1,1,1] );
-    x.('Tw')        = reshape( Tw , [1,N3,1] );
-    x.('t3')        = reshape( t3 , [1,1,N2] );
+    x.('Tw')        = reshape( Tw , [1,1,N2] );
+    x.('t3')        = reshape( t3 , [1,N3,1] );
     x.('w1')        = w1;
     x.('w3')        = w3;
     x.('N1')        = N1;

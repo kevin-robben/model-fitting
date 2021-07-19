@@ -144,7 +144,7 @@ close all
 		M_CLS_fit_12 = fit_exp_decay(x.Tw,M_CLS_arr_12,[0.4,0.3]);
 		save('Output Data\CLS of model fit.mat','w1_axis','M_CLS_arr_01','M_CLS_arr_12','M_CL_w3_arr_01','M_CL_w3_arr_12','M_CLS_fit_01','M_CLS_fit_12');
 	%% compare CLS on plots
-		l = semilogy(CLS_2020vs2021_ax,Tw_arr_2020,CLS_arr_01_2020,'ms',Tw_arr_2020,feval(CLS_fit_01_2020,Tw_arr_2020),'m-',x_apo.Tw,CLS_arr_01,'ko',x_apo.Tw,feval(CLS_fit_01,x_apo.Tw),'k-');
+		l = semilogy(CLS_2020vs2021_ax,Tw_arr_2020,CLS_arr_01_2020,'ms',Tw_arr_2020,feval(CLS_fit_01_2020,Tw_arr_2020),'m-',x_apo.Tw(:),CLS_arr_01,'ko',x_apo.Tw(:),feval(CLS_fit_01,x_apo.Tw),'k-');
 		xlim(CLS_2020vs2021_ax,[0,10]);ylim(CLS_2020vs2021_ax,[0.02,0.5]);
 		l(1).MarkerFaceColor = 'm';l(1).MarkerSize = 4;
 		l(3).MarkerFaceColor = 'k';l(3).MarkerSize = 4;
@@ -153,7 +153,7 @@ close all
 		set(CLS_2020vs2021_ax,'YMinorTick','on','YScale','log','YTick',[0.05 0.1 0.2 0.3 0.4 0.5]);
 		legend(CLS_2020vs2021_ax,'2020 Data (0-1)','Fit','2021 Data (0-1)','Fit');
 		
-		l = semilogy(CLS_2021_ax,x_apo.Tw,CLS_arr_01,'ko',x_apo.Tw,feval(CLS_fit_01,x_apo.Tw),'k-',x_apo.Tw,CLS_arr_12,'b^',x_apo.Tw,feval(CLS_fit_12,x_apo.Tw),'b-');
+		l = semilogy(CLS_2021_ax,x_apo.Tw(:),CLS_arr_01,'ko',x_apo.Tw(:),feval(CLS_fit_01,x_apo.Tw),'k-',x_apo.Tw(:),CLS_arr_12,'b^',x_apo.Tw(:),feval(CLS_fit_12,x_apo.Tw),'b-');
 		xlim(CLS_2021_ax,[0,10]);ylim(CLS_2021_ax,[0.02,0.5]);
 		l(1).MarkerFaceColor = 'k';l(1).MarkerSize = 4;
 		l(3).MarkerFaceColor = 'b';l(3).MarkerSize = 4;
