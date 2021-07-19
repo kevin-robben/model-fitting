@@ -36,6 +36,10 @@ function cond_num = plot_VIF(varargin)
 		end
 	%% initialize aux
 		aux = ILS_initialize_aux(p);
+		switch class(x.t3)
+			case 'gpuArray'
+				aux.gpuComputing = 1;
+		end
 	%% center and normalize JwJ
 		f = @(x,p) M_3rd_order_kubo(x,p);
 		J = Jacobian_f(f,x,p,aux);

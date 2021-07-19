@@ -39,13 +39,21 @@ function [p_min,cov,C,SIGN,aux] = ILS_p_min(x,p,D,w,aux)
 		SIGN = aux.SIGN_prev; % SIGN = previous value - this will trigger a stall
 		p_min = p;
 	else % otherwise, continue as normal
-		C = ILS_C(x,p_min,D,w); % new value of cost function
-		cov = (C/(sum(~~w,'all')-aux.num_var))*inv(JwJ); % compute covariance matrix
-		SIGN = norm(dC.*sqrt(diag(cov)))/C_prev; % SIGN = |grad(C)*SD(p)|/C_prev (unitless, lower limit = machine epsilon)
+		if aux.gpuComputing
+			C = gather(ILS_C(x,p_min,D,w)); % new value of cost function
+			cov = gather((C/(sum(~~w,'all')-aux.num_var))*inv(JwJ)); % compute covariance matrix
+			SIGN = gather(norm(dC.*sqrt(diag(cov)))/C_prev); % SIGN = |grad(C)*SD(p)|/C_prev (unitless, lower limit = machine epsilon)
+			DOF = gather(sum(~~w,'all')-aux.num_var);
+		else
+			C = ILS_C(x,p_min,D,w); % new value of cost function
+			cov = (C/(sum(~~w,'all')-aux.num_var))*inv(JwJ); % compute covariance matrix
+			SIGN = norm(dC.*sqrt(diag(cov)))/C_prev; % SIGN = |grad(C)*SD(p)|/C_prev (unitless, lower limit = machine epsilon)
+			DOF = sum(~~w,'all')-aux.num_var;
+		end
 		aux.SIGN_prev = SIGN;
 	end
 	for i=1:aux.num_var % calculate standard deviation and 95% confidence intervals of each parameter
 		p_min.(fn{aux.var_indx(i)}).SD = sqrt(cov(i,i));
-		p_min.(fn{aux.var_indx(i)}).CI = sqrt(cov(i,i)) * tinv( 1-0.05/2 , sum(~~w,'all')-aux.num_var );
+		p_min.(fn{aux.var_indx(i)}).CI = sqrt(cov(i,i)) * tinv( 1-0.05/2 , DOF );
 	end
 end

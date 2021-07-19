@@ -11,5 +11,5 @@ function aux = ILS_initialize_aux(p)
 	aux.('stall') = 0;
 	aux.('stall_iter') = [];
 	aux.('SIGN_prev') = 1;
-	aux.('p_min_method') = 'pinv';
+	aux.('gpuComputing') = 0;
 end

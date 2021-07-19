@@ -4,17 +4,17 @@ function plot_fit_update(fig,p_init,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,w,tri
 		p_arr = [p_init,p_arr];
 	%% gather arrays to plot later on
 		for i=1:iter+1
-			vib_arr(i,:) = [p_arr(i).w_01.val,p_arr(i).Anh.val];
-			hom_arr(i,:) = [p_arr(i).T_hom_inv.val,p_arr(i).T_LT_inv.val];
-			amp_arr(i,:) = [p_arr(i).A01.val,p_arr(i).A12.val];
+			vib_arr(i,:) = gather([p_arr(i).w_01.val,p_arr(i).Anh.val]);
+			hom_arr(i,:) = gather([p_arr(i).T_hom_inv.val,p_arr(i).T_LT_inv.val]);
+			amp_arr(i,:) = gather([p_arr(i).A01.val,p_arr(i).A12.val]);
 			if isfield(p_arr(1),'kubo1_t') && isfield(p_arr(1),'kubo1_D2')
-				kubo_arr_1(i,:) = [p_arr(i).kubo1_t.val,p_arr(i).kubo1_D2.val];
+				kubo_arr_1(i,:) = gather([p_arr(i).kubo1_t.val,p_arr(i).kubo1_D2.val]);
 			end
 			if isfield(p_arr(1),'kubo2_t') && isfield(p_arr(1),'kubo2_D2')
-				kubo_arr_2(i,:) = [p_arr(i).kubo2_t.val,p_arr(i).kubo2_D2.val];
+				kubo_arr_2(i,:) = gather([p_arr(i).kubo2_t.val,p_arr(i).kubo2_D2.val]);
 			end
 			if isfield(p_arr(1),'kubo3_t') && isfield(p_arr(1),'kubo3_D2')
-				kubo_arr_3(i,:) = [p_arr(i).kubo3_t.val,p_arr(i).kubo3_D2.val];
+				kubo_arr_3(i,:) = gather([p_arr(i).kubo3_t.val,p_arr(i).kubo3_D2.val]);
 			end
 		end
 	%% initialize layout, title

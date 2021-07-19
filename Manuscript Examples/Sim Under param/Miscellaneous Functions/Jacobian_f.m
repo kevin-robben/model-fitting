@@ -8,7 +8,11 @@ function J = Jacobian_f(f,x,p,aux)
 	min_param_val = 1e-8; % this value is somewhat arbitrary
 %% compute Jacobian by finite difference method
 	N = numel(f(x,p));
-    J = zeros(N,aux.num_var); % initialize Jacobian
+	if aux.gpuComputing
+		J = gpuArray(complex(zeros(N,aux.num_var))); % initialize Jacobian
+	else
+		J = complex(zeros(N,aux.num_var)); % initialize Jacobian
+	end
 	php = repmat(p,aux.num_var);
 	phm = repmat(p,aux.num_var);
 	for i=1:aux.num_var % for each column of Jacobian...
@@ -21,5 +25,8 @@ function J = Jacobian_f(f,x,p,aux)
 			phm(i).(fn{aux.var_indx(i)}).val = p.(fn{aux.var_indx(i)}).val - h;
 		%% compute finite difference
 			J(:,i) = reshape((f(x,php(i))-f(x,phm(i)))/(2*h),[N,1]);
+	end
+	if aux.gpuComputing
+		J = gather(J);
 	end
 end
