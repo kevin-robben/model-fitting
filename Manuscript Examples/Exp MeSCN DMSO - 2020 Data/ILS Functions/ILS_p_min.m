@@ -33,24 +33,17 @@ function [p_min,cov,C,SIGN,aux] = ILS_p_min(x,p,D,w,aux)
 	end
 %% update cost function, covariance matrix and confidence intervals
     dC = dC'; % just need to transpose for convenience
+    DOF = gather(sum(~~w,'all')-aux.num_var); % degrees of freedom
 	if cond_num > 1e10 && ~skip_flag % if ill-conditioned, exit early and trigger a stall
-		C = C_prev;
-		cov = inf*ones(aux.num_var); % compute covariance matrix
-		SIGN = aux.SIGN_prev; % SIGN = previous value - this will trigger a stall
-		p_min = p;
+        C = gather(C_prev);
+        cov = inf*ones(aux.num_var); % compute covariance matrix
+        SIGN = gather(aux.SIGN_prev); % SIGN = previous value - this will trigger a stall
+        p_min = p;
 	else % otherwise, continue as normal
-		if aux.gpuComputing
-			C = gather(ILS_C(x,p_min,D,w)); % new value of cost function
-			cov = gather((C/(sum(~~w,'all')-aux.num_var))*inv(JwJ)); % compute covariance matrix
-			SIGN = gather(norm(dC.*sqrt(diag(cov)))/C_prev); % SIGN = |grad(C)*SD(p)|/C_prev (unitless, lower limit = machine epsilon)
-			DOF = gather(sum(~~w,'all')-aux.num_var);
-		else
-			C = ILS_C(x,p_min,D,w); % new value of cost function
-			cov = (C/(sum(~~w,'all')-aux.num_var))*inv(JwJ); % compute covariance matrix
-			SIGN = norm(dC.*sqrt(diag(cov)))/C_prev; % SIGN = |grad(C)*SD(p)|/C_prev (unitless, lower limit = machine epsilon)
-			DOF = sum(~~w,'all')-aux.num_var;
-		end
-		aux.SIGN_prev = SIGN;
+		C = gather(ILS_C(x,p_min,D,w)); % new value of cost function
+        cov = gather((C/(sum(~~w,'all')-aux.num_var))*inv(JwJ)); % compute covariance matrix
+        SIGN = gather(norm(dC.*sqrt(diag(cov)))/C_prev); % SIGN = |grad(C)*SD(p)|/C_prev (unitless, lower limit = machine epsilon)
+		aux.SIGN_prev = gather(SIGN);
 	end
 	for i=1:aux.num_var % calculate standard deviation and 95% confidence intervals of each parameter
 		p_min.(fn{aux.var_indx(i)}).SD = sqrt(cov(i,i));
