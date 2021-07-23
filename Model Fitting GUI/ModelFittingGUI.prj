@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="899862813" file="C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting GUI\ModelFittingGUI.prj" location="C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting GUI" name="ModelFittingGUI" preferred-package-location="C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting Installer\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="2577856431" file="C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting GUI\ModelFittingGUI.prj" location="C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting GUI" name="ModelFittingGUI" preferred-package-location="C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting Installer\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>Model_Fitting_GUI</param.appname>
     <param.icon>${PROJECT_ROOT}\ModelFittingGUI_resources\icon.ico</param.icon>
     <param.icons>
@@ -77,43 +77,9 @@
       <file>${PROJECT_ROOT}\Model_Fitting_GUI.mlapp</file>
     </fileset.main>
     <fileset.resources>
-      <file>${PROJECT_ROOT}\ILS Functions\ILS_backtrack_loop.m</file>
-      <file>${PROJECT_ROOT}\ILS Functions\ILS_C.m</file>
-      <file>${PROJECT_ROOT}\ILS Functions\ILS_check_stall_conv.m</file>
-      <file>${PROJECT_ROOT}\ILS Functions\ILS_initialize_aux.m</file>
-      <file>${PROJECT_ROOT}\ILS Functions\ILS_JwJ_dC.m</file>
-      <file>${PROJECT_ROOT}\ILS Functions\ILS_M.m</file>
-      <file>${PROJECT_ROOT}\ILS Functions\ILS_p_min.m</file>
-      <file>${PROJECT_ROOT}\ILS Functions\ILS_rand_params.m</file>
-      <file>${PROJECT_ROOT}\Lineshape Functions\check_boundaries.m</file>
-      <file>${PROJECT_ROOT}\Lineshape Functions\EA.m</file>
-      <file>${PROJECT_ROOT}\Lineshape Functions\exp_g_hom_01.m</file>
-      <file>${PROJECT_ROOT}\Lineshape Functions\exp_g_hom_12.m</file>
-      <file>${PROJECT_ROOT}\Lineshape Functions\exp_g_kubo.m</file>
-      <file>${PROJECT_ROOT}\Lineshape Functions\GB.m</file>
-      <file>${PROJECT_ROOT}\Lineshape Functions\gen_x.m</file>
-      <file>${PROJECT_ROOT}\Lineshape Functions\M_1st_order_kubo.m</file>
-      <file>${PROJECT_ROOT}\Lineshape Functions\M_3rd_order_kubo.m</file>
-      <file>${PROJECT_ROOT}\Lineshape Functions\Rnr.m</file>
-      <file>${PROJECT_ROOT}\Lineshape Functions\Rr.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\apo_masks.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\compare_2Dspec.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\FID_from_2Dspec.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\FID_to_2Dspec.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\fit_exp_decay.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\Jacobian_f.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\Lin_Abs.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\load_params.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\match_abs.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\nearest_index.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\param_struct_to_arr.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\plot_2DFID.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\plot_2Dspec.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\plot_fit_update.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\plot_VIF.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\print_params.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\save_params.m</file>
-      <file>${PROJECT_ROOT}\Miscellaneous Functions\trace_CL.m</file>
+      <file>${PROJECT_ROOT}\ILS Functions</file>
+      <file>${PROJECT_ROOT}\Lineshape Functions</file>
+      <file>${PROJECT_ROOT}\Miscellaneous Functions</file>
     </fileset.resources>
     <fileset.package />
     <fileset.depfun />
