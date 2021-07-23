@@ -16,7 +16,7 @@
     <param.description />
     <param.screenshot>${PROJECT_ROOT}\Icon.jpg</param.screenshot>
     <param.guid />
-    <param.installpath.string>\Model_Fitting_GUI\</param.installpath.string>
+    <param.installpath.string>\Model Fitting GUI\</param.installpath.string>
     <param.installpath.combo>option.installpath.programfiles</param.installpath.combo>
     <param.logo />
     <param.install.notes />
@@ -53,7 +53,6 @@
       <param.summary />
       <param.description />
       <param.guid />
-      <param.installpath.string />
       <param.installpath.combo />
       <param.logo />
       <param.install.notes />
