@@ -7,6 +7,6 @@ Row,Field Name,Type,Value,Lower Bound,Upper Bound,Units,Plot Label,Std. Dev.,95%
 6,kubo_anh_fctr,variable,1,0.5,1.5,unitless,\beta,0.000585967,0.001148476
 7,T_LT_inv,constant,0.03,0.01,0.4,ps^{-1},T_{LT}^{-1},7.33E-05,0.000143728
 8,T_hom_inv,variable,0.3,0.1,2,ps^{-1},T_{Hom}^{-1},0.001249454,0.002448887
-9,kubo1_t,variable,1,0.1,20,ps,\tau_1,0.00667468,0.013082147
-10,kubo1_D2,variable,20,0,50,cm^{-2},\Delta_1^2,0.059190506,0.116011379
-11,phi,constant,0,-30,30,°,\phi,0,0
+9,phi,constant,0,-30,30,°,\phi,0,0
+10,kubo1_t,variable,1,0.1,20,ps,\tau_1,0.00667468,0.013082147
+11,kubo1_D2,variable,20,0,50,cm^{-2},\Delta_1^2,0.059190506,0.116011379
