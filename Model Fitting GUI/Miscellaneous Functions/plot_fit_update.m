@@ -28,8 +28,10 @@ function plot_fit_update(fig,p_init,p_arr,C_arr,SIGN_arr,SIGN_lim,iter,D,x,w,tri
 		freq_ax = nexttile(t,7); set(freq_ax,'Tag','freq_ax');
 		amp_ax = nexttile(t,8); set(amp_ax,'Tag','amp_ax');
 		s = seconds(toc(timerval));s.Format = 'hh:mm:ss';
-		if aux.stall > 0
+		if aux.stall > 0 && aux.is_nan_or_inf == 0
 			title(t,sprintf('Trial %i, Iteration %i (Time: %s)\nFitting Stalled. Attempting to Resolve...',trial_num,iter,s))
+		elseif aux.stall > 0 && aux.is_nan_or_inf == 1
+			title(t,sprintf('Trial %i, Iteration %i (Time: %s)\nInf or NaN present in model. Attempting to Resolve...',trial_num,iter,s))
 		else
 			title(t,sprintf('Trial %i, Iteration %i (Time: %s)\n',trial_num,iter,s))
 		end

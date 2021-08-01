@@ -10,6 +10,7 @@ function aux = ILS_initialize_aux(p)
     aux.('var_indx') = var_indx;
 	aux.('stall') = 0;
 	aux.('stall_iter') = [];
+	aux.('is_nan_or_inf') = 0;
 	aux.('SIGN_prev') = 1;
 	aux.('gpuComputing') = 0;
 end
