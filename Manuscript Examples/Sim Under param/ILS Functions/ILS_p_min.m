@@ -23,8 +23,8 @@ function [p_min,cov,C,SIGN,aux] = ILS_p_min(x,p,D,w,aux)
 	elseif aux.is_nan_or_inf == 1 % if nan, inf, and/or ill-conditioning present
 		p_min = p;
 		cov = nan*ones(aux.num_var); % compute covariance matrix as nan
-		C = nan; % compute the cost function as nan
-		SIGN = nan; % compute the SIGN as nan
+		C = gather(ILS_C(x,p_min,D,w)); % cost function
+		SIGN = gather(aux.SIGN_prev); % SIGN = previous value
 		for i=1:aux.num_var % calculate standard deviation and 95% confidence intervals of each parameter as nan
 			p_min.(fn{aux.var_indx(i)}).SD = nan;
 			p_min.(fn{aux.var_indx(i)}).CI = nan;
