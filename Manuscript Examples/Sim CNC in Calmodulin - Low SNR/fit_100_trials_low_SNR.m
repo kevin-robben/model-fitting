@@ -206,7 +206,7 @@ for trial=1:100
 			hold(ax,'on');
 			line(ax,[0,5],[1,1],'Color','k','LineStyle','--');
 			errorbar(ax,(1:4)+0.1,mean(model_fit_val_arr,1)./true_vals,(std(model_fit_val_arr,0,1)./true_vals)*tinv(1-0.05/2,trial-1)/sqrt(trial),'r.');
-			xlim(ax,[0.5,4.5]);ylim(ax,[1-0.01*sqrt(100/trial),1+0.01*sqrt(100/trial)]);
+			xlim(ax,[0.5,4.5]);ylim(ax,[1-0.05*sqrt(100/trial),1+0.05*sqrt(100/trial)]);
 			xticks(ax,[1 2 3 4])
 			xticklabels(ax,{'\Delta^2_1','\Delta^2_2','\tau_1','T_{hom}^{-1}'})
 			set(ax,'Box','on','TickLength',[0.02,0]);
