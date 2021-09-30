@@ -318,11 +318,11 @@ close all
 		xlim(CLS_T_hom_inv_ax,[0.5,3.5]);
 	%% adjust y-axis limits
 		ylim(CLS_kubo1_t_ax,[3,6.1]);
-		ylim(CLS_kubo1_D2_ax,[5,15]);
+		ylim(CLS_kubo1_D2_ax,[-20,45]);
 		ylim(CLS_T_hom_inv_ax,[0.3,0.8]);
 		ylim(fit_kubo1_t_ax,[3,4]);
 		ylim(fit_kubo1_D2_ax,[13,15.5]);
-		ylim(fit_T_hom_inv_ax,[0.25,0.5]);
+		ylim(fit_T_hom_inv_ax,[-1.5,2.2]);
 	%% annotations
 		annotation(params_fig,'textbox',[0.2583 0.7424 0.1483 0.0416],'Color',[0 0 1],'String','2021','LineStyle','none','FitBoxToText','off');
 		annotation(params_fig,'textbox',[0.129 0.8976 0.1483 0.0416],'Color',[1 0 1],'String','2020','LineStyle','none','FitBoxToText','off');
