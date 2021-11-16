@@ -12,7 +12,7 @@ close all;
 	Tw = [ 0:0.1:1 , 1.2:0.2:2 , 2.5:0.5:5, 6:1:10, 15:5:30, 40:20:100];
     x = gen_x([0 4],16,2130,[2110 2190],128,Tw,'real');
 %% prepare param struct for linear absorption fitting
-	w3_fit_range = [p.w_01.val-fit_bw/2,p.w_01.val+fit_bw/2]; % upper 95% of linear absorption
+	w3_fit_range = [p.w_01.val-fit_bw/2,p.w_01.val+fit_bw/2]; % upper 80% of linear absorption
 	[n3_min,n3_max] = nearest_index(x.w3,w3_fit_range);
 	fxn = @(x,p) Lin_Abs(x,p,p.A01.val,p.c.val,[p.kubo1_t.val,p.kubo2_t.val],[p.kubo1_D2.val,p.kubo2_D2.val],p.T_hom_inv.val,[n3_min,n3_max],x.w3);
 	p_LA = p;
