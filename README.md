@@ -6,7 +6,7 @@ Click the green "Code" button and "Download Zip". Unzip the file and run the ins
 Note that installing the Model Fitting GUI App does not require MATLAB. Instead, the installer will download MATLAB Runtime which is free of charge.
 On the other hand, running or editing the actual source code will require MATLAB R2020a, or newer, which does require a license.
 
-I strongly recommend the following youtube tutorials for using the model fitting GUI. There are a couple of features and idiosyncrasies 
+I strongly recommend the following youtube tutorials for using the model fitting GUI. There are a couple of features and idiosyncrasies that are worth knowing.
 
 Tutorial 1: Download and Installation https://youtu.be/v4-AfWF6CbQ
 
