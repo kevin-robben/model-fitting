@@ -16,4 +16,4 @@ Tutorial 3: Loading Parameters, Model Fitting https://youtu.be/N0iaWPMacpY
 
 Tutorial 4: Simulating Data, Examples of Stalling, Multicollinearity https://youtu.be/94Bo3aiUdPc
 
-Please note a typo that appears in the supporting information of the manuscript (https://doi.org/10.1021/acs.jpcb.1c08764): The third line of Eq. S8 is missing a factor of (2*π*c)^2 in the argument of the exponential. This typo is limited to the supporting information. The original source code does include this factor. Special thanks to Anneka Jean Miller for recognizing this.
+Please note two typos that appear in Eq. S8 in the supporting information of the manuscript (https://doi.org/10.1021/acs.jpcb.1c08764): (1) Minus signs are missing in the arguments of the expm1() terms as well as the exp(Tw/tau) term, and (2) the third line of Eq. S8 is missing a factor of (2*π*c)^2. The original source code does *not* include these typos. Special thanks to Anneka Jean Miller and Evan Schroeder for recognizing these!
