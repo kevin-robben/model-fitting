@@ -1,6 +1,6 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
   <configuration build-checksum="2577856431" file="C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting GUI\ModelFittingGUI.prj" location="C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting GUI" name="ModelFittingGUI" preferred-package-location="C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting Installer\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
-    <param.appname>Model_Fitting_GUI</param.appname>
+    <param.appname>ModelFittingGUI</param.appname>
     <param.icon>${PROJECT_ROOT}\ModelFittingGUI_resources\icon.ico</param.icon>
     <param.icons>
       <file>${PROJECT_ROOT}\ModelFittingGUI_resources\icon_48.png</file>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}\ModelFittingGUI_resources\icon_24.png</file>
       <file>${PROJECT_ROOT}\ModelFittingGUI_resources\icon_16.png</file>
     </param.icons>
-    <param.version>1.0</param.version>
+    <param.version>1.1</param.version>
     <param.authnamewatermark>Kevin Robben</param.authnamewatermark>
     <param.email>kevin-robben@uiowa.edu</param.email>
     <param.company />
@@ -48,7 +48,6 @@
 	 -?  print help on how to use the application 
 	 input arguments</param.help.text>
     <unset>
-      <param.version />
       <param.company />
       <param.summary />
       <param.description />
@@ -84,13 +83,13 @@
     <fileset.package />
     <fileset.depfun />
     <build-deliverables>
-      <file location="C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting Installer\for_testing" name="Model_Fitting_GUI.exe" optional="false">C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting Installer\for_testing\Model_Fitting_GUI.exe</file>
       <file location="C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting Installer\for_testing" name="readme.txt" optional="true">C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting Installer\for_testing\readme.txt</file>
+      <file location="C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting Installer\for_testing" name="ModelFittingGUI.exe" optional="false">C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting Installer\for_testing\ModelFittingGUI.exe</file>
       <file location="C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting Installer\for_testing" name="splash.png" optional="false">C:\Users\Kevin\Documents\GitHub\model-fitting\Model Fitting Installer\for_testing\splash.png</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2020a</root>
+      <root>C:\Program Files\MATLAB\R2022a</root>
       <toolboxes>
         <toolbox name="matlabcoder" />
         <toolbox name="gpucoder" />
